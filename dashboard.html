@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GOV-AI | Bureaucracy Assistant Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1e40af", // Professional deep blue
+                        secondary: "#0d9488", // Teal accent
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .grid-pattern {
+            background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .dark .grid-pattern {
+            background-image: radial-gradient(circle, #334155 1px, transparent 1px);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+    <aside class="fixed left-0 top-0 h-full w-64 bg-primary text-white z-40 hidden lg:flex flex-col shadow-2xl">
+        <div class="p-6 flex items-center gap-3">
+            <div class="p-2 bg-white/10 rounded-lg">
+                <span class="material-icons-outlined text-3xl">account_balance</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-xl tracking-tight">GOV-AI</h1>
+                <p class="text-[10px] opacity-70 uppercase tracking-widest font-semibold">Bureaucracy Assistant</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 mt-4 space-y-1">
+            <nav class="flex-1 px-4 mt-4 space-y-1">
+                <a id="nav-overview"
+                    class="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl font-medium transition-all group active-nav"
+                    href="#" data-section="overview">
+                    <span class="material-icons-outlined">dashboard</span>
+                    <span>Dashboard Overview</span>
+                </a>
+                <a id="nav-profile"
+                    class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#" data-section="profile">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">person</span>
+                    <span>My Profile</span>
+                </a>
+                <a id="nav-documents"
+                    class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#" data-section="documents">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">folder_open</span>
+                    <span>Document Management</span>
+                </a>
+                <a id="nav-upload"
+                    class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#" data-section="upload">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">cloud_upload</span>
+                    <span>Upload &amp; OCR</span>
+                </a>
+                <a id="nav-formfill"
+                    class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#" data-section="formfill">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">edit_note</span>
+                    <span>Form Auto-Fill</span>
+                </a>
+                <a id="nav-status"
+                    class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#" data-section="status">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">track_changes</span>
+                    <span>Application Status</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all group"
+                    href="#">
+                    <span class="material-icons-outlined opacity-70 group-hover:opacity-100">notifications_none</span>
+                    <span>Notifications</span>
+                    <span class="ml-auto bg-red-500 text-[10px] px-1.5 py-0.5 rounded-full">3</span>
+                </a>
+            </nav>
+            <div class="p-4 mt-auto">
+                <div class="p-4 bg-white/5 rounded-2xl mb-4">
+                    <p class="text-sm font-medium opacity-80 mb-2">Support Center</p>
+                    <p class="text-xs opacity-60 mb-3">Need help with your applications?</p>
+                    <button
+                        class="w-full py-2 bg-white text-primary text-xs font-bold rounded-lg hover:bg-slate-100 transition-colors">
+                        CONTACT AGENT
+                    </button>
+                </div>
+                <a class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl font-medium transition-all text-red-200"
+                    href="#">
+                    <span class="material-icons-outlined">logout</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+    </aside>
+    <main class="lg:ml-64 min-h-screen p-8 grid-pattern relative">
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h2 id="section-title" class="text-3xl font-bold dark:text-white">Dashboard Overview</h2>
+                <p id="section-desc" class="text-slate-500 dark:text-slate-400 mt-1">Everything looks good. You have 2
+                    pending tasks.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative group">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input
+                        class="pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 w-64 focus:ring-2 focus:ring-primary transition-all"
+                        placeholder="Search services..." type="text" />
+                </div>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
+                    <button id="btn-update-profile"
+                        class="hidden md:flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all ring-1 ring-primary/20">
+                        <span class="material-icons-outlined text-sm">edit</span>
+                        UPDATE PROFILE
+                    </button>
+                    <div class="text-right hidden sm:block">
+                        <p id="header-user-name" class="text-sm font-bold dark:text-white leading-tight">Udhay Kiran</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-semibold">Citizen ID: 1024-5562</p>
+                    </div>
+                    <div
+                        class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold ring-4 ring-white dark:ring-slate-800 shadow-lg">
+                        UK
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Sections -->
+        <div id="content-overview" class="content-section">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600 dark:text-blue-400">
+                            <span class="material-icons-outlined">description</span>
+                        </div>
+                        <div class="relative h-10 w-10">
+                            <svg class="h-full w-full" viewBox="0 0 36 36">
+                                <path class="text-slate-100 dark:text-slate-700 stroke-current"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke-width="3"></path>
+                                <path class="text-blue-500 stroke-current"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke-dasharray="80, 100" stroke-linecap="round" stroke-width="3">
+                                </path>
+                            </svg>
+                            <span
+                                class="absolute inset-0 flex items-center justify-center text-[8px] font-bold">80%</span>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Documents Store</h3>
+                    <div class="flex items-end gap-2 mt-1">
+                        <span class="text-3xl font-bold dark:text-white">08</span>
+                        <span class="text-xs text-green-500 font-bold pb-1">+2 this mo</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-2xl text-teal-600 dark:text-teal-400">
+                            <span class="material-icons-outlined">assignment_turned_in</span>
+                        </div>
+                        <div class="flex items-end gap-1 h-10 pt-2">
+                            <div class="w-1.5 h-3 bg-teal-200 dark:bg-teal-800 rounded-full"></div>
+                            <div class="w-1.5 h-6 bg-teal-300 dark:bg-teal-700 rounded-full"></div>
+                            <div class="w-1.5 h-4 bg-teal-400 dark:bg-teal-600 rounded-full"></div>
+                            <div class="w-1.5 h-8 bg-teal-500 dark:bg-teal-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Applications</h3>
+                    <div class="flex items-end gap-2 mt-1">
+                        <span class="text-3xl font-bold dark:text-white">03</span>
+                        <span class="text-xs text-slate-400 font-medium pb-1">Ongoing</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-2xl text-amber-600 dark:text-amber-400">
+                            <span class="material-icons-outlined">hourglass_empty</span>
+                        </div>
+                        <div
+                            class="text-amber-500 font-bold text-xs bg-amber-50 dark:bg-amber-900/50 px-2 py-1 rounded-lg">
+                            High Priority</div>
+                    </div>
+                    <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending Renewals</h3>
+                    <div class="flex items-end gap-2 mt-1">
+                        <span class="text-3xl font-bold dark:text-white">01</span>
+                        <span class="text-xs text-amber-500 font-bold pb-1">Expires in 5d</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="p-3 bg-green-50 dark:bg-green-900/30 rounded-2xl text-green-600 dark:text-green-400">
+                            <span class="material-icons-outlined">verified_user</span>
+                        </div>
+                        <span class="material-icons-outlined text-green-500">check_circle</span>
+                    </div>
+                    <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Security Health</h3>
+                    <div class="flex items-end gap-2 mt-1">
+                        <span class="text-2xl font-bold text-green-600 dark:text-green-400">Secure</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div
+                    class="xl:col-span-2 bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="text-xl font-bold dark:text-white">Recent Activity</h3>
+                            <p class="text-sm text-slate-500">Your latest document interactions</p>
+                        </div>
+                        <button
+                            class="px-5 py-2 text-primary dark:text-blue-400 text-sm font-bold bg-blue-50 dark:bg-blue-900/30 rounded-xl hover:bg-blue-100 transition-colors">View
+                            All Activity</button>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div
+                                class="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-icons-outlined">badge</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold dark:text-white">Uploaded Driver's License</h4>
+                                <p class="text-xs text-slate-400">Personal Identification • PDF (2.4 MB)</p>
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 mb-1">COMPLETED</span>
+                                <p class="text-xs text-slate-500">Feb 20, 2026</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div
+                                class="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-icons-outlined">auto_fix_high</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold dark:text-white">Passport Renewal Form</h4>
+                                <p class="text-xs text-slate-400">Smart-filled via AI • Form ID: 4421</p>
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 mb-1">DRAFT
+                                    SAVED</span>
+                                <p class="text-xs text-slate-500">Feb 18, 2026</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div
+                                class="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-icons-outlined">credit_card</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold dark:text-white">Applied for PAN Card Update</h4>
+                                <p class="text-xs text-slate-400">Tax Identification • Submission #9901</p>
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 mb-1">IN
+                                    REVIEW</span>
+                                <p class="text-xs text-slate-500">Feb 15, 2026</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute -bottom-10 -right-10 h-40 w-40 bg-slate-100 dark:bg-slate-700/30 rounded-full blur-3xl -z-10">
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="text-xl font-bold mb-6 dark:text-white">Upcoming Deadlines</h3>
+                        <div class="space-y-4">
+                            <div class="pl-4 border-l-4 border-amber-500 py-1">
+                                <p class="text-sm font-bold dark:text-white">Vehicle Insurance Renewal</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs font-medium text-amber-600">Due in 5 days</span>
+                                    <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                                    <span class="text-xs text-slate-400">Feb 25</span>
+                                </div>
+                            </div>
+                            <div class="pl-4 border-l-4 border-primary py-1">
+                                <p class="text-sm font-bold dark:text-white">Voter ID Update Window</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs font-medium text-primary">Closes March 15</span>
+                                </div>
+                            </div>
+                            <div class="pl-4 border-l-4 border-green-500 py-1">
+                                <p class="text-sm font-bold dark:text-white">Income Tax Filing Start</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs font-medium text-green-600">Opens April 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-primary to-blue-700 rounded-3xl p-8 shadow-xl text-white">
+                        <h3 class="text-xl font-bold mb-6">Quick Actions</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button
+                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                                <span
+                                    class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">add_circle_outline</span>
+                                <span class="text-[10px] font-bold uppercase tracking-tight">New App</span>
+                            </button>
+                            <button
+                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                                <span
+                                    class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">file_upload</span>
+                                <span class="text-[10px] font-bold uppercase tracking-tight">Upload Doc</span>
+                            </button>
+                            <button
+                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                                <span
+                                    class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">qr_code_scanner</span>
+                                <span class="text-[10px] font-bold uppercase tracking-tight">Scan File</span>
+                            </button>
+                            <button
+                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                                <span
+                                    class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">smart_toy</span>
+                                <span class="text-[10px] font-bold uppercase tracking-tight">AI Assistant</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-profile" class="content-section hidden">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold dark:text-white">Citizen Registration Profile</h3>
+                        <p class="text-slate-500 text-sm">Official identification and demographic data</p>
+                    </div>
+                    <span
+                        class="px-4 py-1 bg-green-100 text-green-600 text-xs font-bold rounded-full border border-green-200">VERIFIED
+                        ACCOUNT</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-6">
+                        <div
+                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Full
+                                Legal Name</label>
+                            <p id="profile-display-name" class="text-lg font-semibold dark:text-white">Udhay Kiran</p>
+                        </div>
+                        <div
+                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Citizen
+                                ID (Aadhar)</label>
+                            <p class="text-lg font-semibold dark:text-white">XXXX XXXX 4421</p>
+                        </div>
+                        <div
+                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Registered
+                                Contact</label>
+                            <p id="profile-display-contact" class="text-lg font-semibold dark:text-white">+91 98765
+                                43210</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div
+                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Official
+                                Email</label>
+                            <p id="profile-display-email" class="text-lg font-semibold dark:text-white">
+                                udhay.kiran@example.gov.in</p>
+                        </div>
+                        <div
+                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Permanent
+                                Residential Address</label>
+                            <p id="profile-display-address" class="text-lg font-semibold dark:text-white">123, Heritage
+                                Villa, New Delhi, 110001</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="document.getElementById('profile-modal').classList.remove('hidden')"
+                                class="flex-1 py-3 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
+                                <span class="material-icons-outlined">edit</span> UPDATE PROFILE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-documents" class="content-section hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 class="text-xl font-bold dark:text-white">Secure Document Vault</h3>
+                                <p class="text-slate-500 text-sm">Manage your government-verified identity proofs</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Document Item -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-2xl border border-slate-50 dark:border-slate-700 hover:border-primary transition-all group cursor-pointer">
+                                <div
+                                    class="h-12 w-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary">
+                                    <span class="material-icons-outlined">badge</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold dark:text-white uppercase text-xs">Aadhar Card</h4>
+                                    <p class="text-[10px] text-slate-400">ID: XXXX XXXX 4421 • Verified on Jan 12</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="px-2 py-0.5 bg-green-100 text-green-600 text-[8px] font-bold rounded-md">SECURE</span>
+                                    <span
+                                        class="material-icons-outlined text-slate-300 group-hover:text-primary">more_vert</span>
+                                </div>
+                            </div>
+                            <!-- Document Item -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-2xl border border-slate-50 dark:border-slate-700 hover:border-primary transition-all group cursor-pointer">
+                                <div
+                                    class="h-12 w-12 rounded-xl bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600">
+                                    <span class="material-icons-outlined">payment</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold dark:text-white uppercase text-xs">PAN Card</h4>
+                                    <p class="text-[10px] text-slate-400">ID: ABCPKXXXXJ • Verified on Feb 05</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="px-2 py-0.5 bg-green-100 text-green-600 text-[8px] font-bold rounded-md">SECURE</span>
+                                    <span
+                                        class="material-icons-outlined text-slate-300 group-hover:text-primary">more_vert</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="text-lg font-bold dark:text-white mb-6">Quick Upload Zone</h3>
+                        <div
+                            class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-8 flex flex-col items-center justify-center text-center group hover:border-primary transition-all cursor-pointer">
+                            <div
+                                class="h-16 w-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform mb-4">
+                                <span class="material-icons-outlined text-3xl">upload_file</span>
+                            </div>
+                            <h4 class="font-bold text-sm dark:text-white uppercase">Upload New File</h4>
+                            <p class="text-[10px] text-slate-400 mt-2">Drag & drop files or click to browse (PDF, PNG,
+                                JPG)</p>
+                            <input type="file" id="doc-upload-2" class="hidden" />
+                            <button onclick="document.getElementById('doc-upload-2').click()"
+                                class="mt-6 w-full py-2.5 bg-slate-50 dark:bg-slate-900 text-primary text-xs font-bold rounded-xl border border-slate-100 dark:border-slate-700 hover:bg-primary hover:text-white transition-all">SELECT
+                                FILE</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-primary rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-icons-outlined">auto_awesome</span>
+                            <h4 class="font-bold text-sm uppercase">AI Extraction</h4>
+                        </div>
+                        <p class="text-[10px] opacity-80 leading-relaxed">System automatically extracts structured data
+                            from your uploads for auto-filling future forms.</p>
+                        <div class="mt-4 p-3 bg-white/10 rounded-xl border border-white/5 opacity-40">
+                            <p class="text-[9px] font-mono italic">Waiting for upload...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-upload" class="content-section hidden">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-3xl p-12 shadow-sm text-center border border-slate-100 dark:border-slate-700">
+                <span class="material-icons-outlined text-6xl text-slate-200 mb-4">document_scanner</span>
+                <h3 class="text-2xl font-bold dark:text-white uppercase mb-2">OCR SCANNER WORKSPACE</h3>
+                <p class="text-slate-500 max-w-lg mx-auto">This dedicated zone is for batch processing documents. For
+                    quick uploads, use the Document Management tab.</p>
+            </div>
+        </div>
+
+        <div id="content-formfill" class="content-section hidden">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-3xl p-12 shadow-sm text-center border border-slate-100 dark:border-slate-700">
+                <span class="material-icons-outlined text-6xl text-slate-200 mb-4">auto_fix_high</span>
+                <h3 class="text-2xl font-bold dark:text-white uppercase mb-2">AI AUTO-FILL SERVICE</h3>
+                <p class="text-slate-500 max-w-lg mx-auto">Our AI will automatically populate government forms using
+                    your verified documents.</p>
+            </div>
+        </div>
+
+        <div id="content-status" class="content-section hidden">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-3xl p-12 shadow-sm text-center border border-slate-100 dark:border-slate-700">
+                <span class="material-icons-outlined text-6xl text-slate-200 mb-4">track_changes</span>
+                <h3 class="text-2xl font-bold dark:text-white uppercase mb-2">APPLICATION TRACKING</h3>
+                <p class="text-slate-500 max-w-lg mx-auto">Track the real-time status of all your government
+                    applications in one place.</p>
+            </div>
+        </div>
+    </main>
+    <button
+        class="fixed bottom-8 right-8 h-16 w-16 bg-secondary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50">
+        <span class="material-icons-outlined text-3xl">chat_bubble</span>
+    </button>
+    <!-- Profile Update Modal -->
+    <div id="profile-modal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-800 rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700 animate-in fade-in zoom-in duration-300">
+            <div
+                class="p-8 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                <div>
+                    <h3 class="text-xl font-bold dark:text-white">Update Citizen Profile</h3>
+                    <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold font-mono">Profile
+                        Registration Edit (REQ-1)</p>
+                </div>
+                <button onclick="closeProfileModal()"
+                    class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-400">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+
+            <form id="profile-form" class="p-8 space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Full Legal
+                            Name</label>
+                        <input type="text" name="fullName" value="Udhay Kiran"
+                            class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none ring-1 ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary transition-all font-semibold dark:text-white"
+                            required />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Contact
+                            Number</label>
+                        <input type="text" name="contact" value="+91 98765 43210"
+                            class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none ring-1 ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary transition-all font-semibold dark:text-white"
+                            required />
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Official Email
+                        Address</label>
+                    <input type="email" name="email" value="udhay.kiran@example.gov.in"
+                        class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none ring-1 ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary transition-all font-semibold dark:text-white"
+                        required />
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Residential
+                        Address</label>
+                    <textarea name="address" rows="3"
+                        class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none ring-1 ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary transition-all font-semibold dark:text-white"
+                        required>123, Heritage Villa, New Delhi, 110001</textarea>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeProfileModal()"
+                        class="flex-1 py-4 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-800 transition-all uppercase text-xs tracking-wider">Cancel</button>
+                    <button type="submit"
+                        class="flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 uppercase text-xs tracking-wider flex items-center justify-center gap-2">
+                        <span class="material-icons-outlined text-sm">save</span>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('aside nav a');
+            const sections = document.querySelectorAll('.content-section');
+            const sectionTitle = document.getElementById('section-title');
+            const sectionDesc = document.getElementById('section-desc');
+
+            const sectionMeta = {
+                'nav-overview': { title: 'Dashboard Overview', desc: 'Everything looks good. You have 2 pending tasks.' },
+                'nav-profile': { title: 'Citizen Profile', desc: 'Official identification and demographic data (REQ-1)' },
+                'nav-documents': { title: 'Document Management', desc: 'Manage your government-verified identity proofs (REQ-2)' },
+                'nav-upload': { title: 'OCR Scanner Workspace', desc: 'Batch process documents with AI data extraction.' },
+                'nav-formfill': { title: 'AI Auto-Fill Service', desc: 'Let AI handle the paperwork using your verified data.' },
+                'nav-status': { title: 'Application Tracking', desc: 'Real-time status of your ongoing government applications.' }
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const targetId = link.id;
+                    if (!targetId || targetId === 'nav-logout' || !link.dataset.section) return;
+
+                    e.preventDefault();
+
+                    // Update Sidebar UI
+                    navLinks.forEach(l => {
+                        l.classList.remove('bg-white/10', 'active-nav');
+                        l.querySelector('span:first-child')?.classList.add('opacity-70');
+                    });
+                    link.classList.add('bg-white/10', 'active-nav');
+                    link.querySelector('span:first-child')?.classList.remove('opacity-70');
+
+                    // Update Main Content
+                    sections.forEach(s => s.classList.add('hidden'));
+                    const targetSection = document.getElementById('content-' + link.dataset.section);
+                    if (targetSection) {
+                        targetSection.classList.remove('hidden');
+
+                        // Update Header
+                        if (sectionMeta[targetId]) {
+                            sectionTitle.innerText = sectionMeta[targetId].title;
+                            sectionDesc.innerText = sectionMeta[targetId].desc;
+                        }
+                    }
+                });
+            });
+
+            // Modal Logic
+            const modal = document.getElementById('profile-modal');
+            const updateBtn = document.getElementById('btn-update-profile');
+            const profileForm = document.getElementById('profile-form');
+
+            // Map form fields to display elements
+            const displayElements = {
+                fullName: [document.getElementById('header-user-name'), document.getElementById('profile-display-name')],
+                contact: [document.getElementById('profile-display-contact')],
+                email: [document.getElementById('profile-display-email')],
+                address: [document.getElementById('profile-display-address')]
+            };
+
+            updateBtn?.addEventListener('click', () => {
+                modal?.classList.remove('hidden');
+            });
+
+            window.closeProfileModal = () => {
+                modal?.classList.add('hidden');
+            };
+
+            profileForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(profileForm);
+
+                // Update UI elements with new values
+                formData.forEach((value, key) => {
+                    if (displayElements[key]) {
+                        displayElements[key].forEach(el => {
+                            if (el) el.innerText = value;
+                        });
+                    }
+                });
+
+                closeProfileModal();
+                // Show notification (simulated)
+                alert('Profile updated successfully!');
+            });
+
+            // Allow closing by clicking backdrop
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) closeProfileModal();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
