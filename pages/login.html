@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Login | GOV-AI Assistant</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module" src="../firebase/SignIn.js" defer></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .secure-badge {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .otp-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-box {
+            width: 50px;
+            height: 60px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .otp-box:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card login-card">
+        <div class="logo-section">
+            <i class="fas fa-landmark"></i>
+            <h2>Citizen Login</h2>
+            <p class="text-secondary">Official Access Portal</p>
+        </div>
+
+        <div class="text-center">
+            <span class="secure-badge">
+                <i class="fas fa-lock"></i> HTTPS Secure 256-bit Encryption
+            </span>
+        </div>
+
+        <!-- Step 1: ID & Password -->
+        <form id="login-form">
+            <div id="step-1">
+                <div class="form-group">
+                    <label for="login-id">Email</label>
+                    <input type="text" id="login-id" placeholder="Enter Email" required>
+                    <div id="id-error" class="error-msg">Please enter a valid Email</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <div class="flex justify-between align-center" style="margin-bottom: 20px; font-size: 0.9rem;">
+                    <label class="flex align-center" style="font-weight: 400; margin-bottom: 0;">
+                        <input type="checkbox" style="margin-right: 8px;"> Remember me
+                    </label>
+                    <a href="javascript:void(0)" onclick="showForgotPw()" style="color: var(--primary-color);">Forgot
+                        Password?</a>
+                </div>
+
+                <div class="flex align-center"
+                    style="gap: 10px; margin-bottom: 25px; font-size: 0.85rem; color: var(--text-secondary);">
+                    <input type="checkbox" id="consent" required>
+                    <span>I consent to the processing of my data as per the <a href="#"
+                            style="text-decoration: underline;">Privacy Policy</a>.</span>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="login-btn" style="width: 100%; padding: 14px;">
+                    Login <i class="fas fa-paper-plane"></i>
+                </button>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="step-2" class="otp-section">
+                <div class="text-center" style="margin-bottom: 20px;">
+                    <p>A One-Time Password has been sent to your <span id="sent-to-val"
+                            style="font-weight: 600;"></span></p>
+                    <small class="text-muted">Verification required for secure access</small>
+                </div>
+
+                <div class="otp-input-group">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                </div>
+
+                <div id="otp-error" class="error-msg text-center" style="margin-bottom: 15px;">Invalid OTP. Please try
+                    again.</div>
+
+                <button type="button" onclick="verifyOTP()" class="btn btn-primary" style="width: 100%; padding: 14px;">
+                    Verify & Access Dashboard <i class="fas fa-shield-alt"></i>
+                </button>
+
+                <div class="text-center" style="margin-top: 20px;">
+                    <a href="javascript:void(0)" onclick="backToStep1()"
+                        style="font-size: 0.9rem; color: var(--text-secondary);">
+                        <i class="fas fa-arrow-left"></i> Use different ID
+                    </a>
+                </div>
+            </div>
+
+            <!-- Forgot Password Section -->
+            <div id="forgot-pw-section" class="otp-section">
+                <div class="text-center" style="margin-bottom: 20px;">
+                    <h3>Recover Password</h3>
+                    <p class="text-secondary">Enter your registered Email or Phone No. to receive instructions.</p>
+                </div>
+                <div class="form-group">
+                    <label>Registration ID</label>
+                    <input type="text" id="forgot-id" placeholder="Email or Phone No.">
+                    <div id="forgot-id-error" class="error-msg">Please enter a valid Email or 10-digit Phone No.</div>
+                </div>
+
+                <div id="forgot-success"
+                    style="display: none; background: rgba(40, 167, 69, 0.1); color: var(--success-color); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px; font-size: 0.9rem;">
+                    <i class="fas fa-check-circle"></i> If this ID is registered, you will receive password reset
+                    instructions shortly.
+                </div>
+
+                <button type="button" id="reset-btn" onclick="handleReset()" class="btn btn-primary"
+                    style="width: 100%; padding: 14px;">
+                    Request Reset Link <i class="fas fa-envelope-open-text"></i>
+                </button>
+
+                <div class="text-center" style="margin-top: 20px;">
+                    <a href="javascript:void(0)" onclick="backToStep1()"
+                        style="font-size: 0.9rem; color: var(--text-secondary);">
+                        <i class="fas fa-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <div class="text-center" id="register-link" style="margin-top: 30px; font-size: 0.95rem;">
+            <span>Don't have an account?</span>
+            <a href="register.html" style="color: var(--primary-color); font-weight: 700; margin-left: 5px;">Register
+                Now</a>
+        </div>
+
+        <div class="text-center"
+            style="margin-top: 40px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <a href="../index.html" class="text-secondary" style="font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentOTP = '';
+
+        function showSimulatedNotification(id, otp) {
+            const notice = document.createElement('div');
+            notice.style.cssText = `
+                position: fixed; top: 20px; right: 20px; background: #333; color: white;
+                padding: 15px 25px; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                border-left: 5px solid var(--secondary-color); animation: slideIn 0.5s ease;
+            `;
+            notice.innerHTML = `
+                <div style="font-weight: 700; margin-bottom: 5px;"><i class="fas fa-comment-dots"></i> Message Received</div>
+                <div style="font-size: 0.9rem;">Your GOV-AI Verification Code is: <b style="letter-spacing: 2px;">${otp}</b></div>
+                <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">Sent to ${id}</div>
+            `;
+            document.body.appendChild(notice);
+
+            setTimeout(() => {
+                notice.style.animation = 'slideOut 0.5s ease forwards';
+                setTimeout(() => notice.remove(), 500);
+            }, 6000);
+        }
+
+        function showForgotPw() {
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('register-link').style.display = 'none';
+            document.getElementById('forgot-pw-section').style.display = 'block';
+        }
+
+        function handleReset() {
+            const id = document.getElementById('forgot-id').value.trim();
+            const error = document.getElementById('forgot-id-error');
+            const success = document.getElementById('forgot-success');
+            const btn = document.getElementById('reset-btn');
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^\d{10}$/;
+
+            if (!emailRegex.test(id) && !phoneRegex.test(id)) {
+                error.style.display = 'block';
+                success.style.display = 'none';
+                return;
+            }
+
+            error.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
+            btn.disabled = true;
+
+            // In a real app, you'd use Firebase sendPasswordResetEmail
+            setTimeout(() => {
+                success.style.display = 'block';
+                btn.innerHTML = 'Reset Link Sent <i class="fas fa-check"></i>';
+                btn.style.background = 'var(--success-color)';
+            }, 2000);
+        }
+
+        function backToStep1() {
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('forgot-pw-section').style.display = 'none';
+            document.getElementById('step-1').style.display = 'block';
+            document.getElementById('register-link').style.display = 'block';
+
+            // Reset reset button state
+            const resetBtn = document.getElementById('reset-btn');
+            resetBtn.innerHTML = 'Request Reset Link <i class="fas fa-envelope-open-text"></i>';
+            resetBtn.disabled = false;
+            resetBtn.style.background = '';
+            document.getElementById('forgot-success').style.display = 'none';
+        }
+
+        // Auto-focus move for OTP boxes
+        const boxes = document.querySelectorAll('.otp-box');
+        boxes.forEach((box, idx) => {
+            box.addEventListener('keyup', (e) => {
+                if (e.target.value.length === 1 && idx < boxes.length - 1) {
+                    boxes[idx + 1].focus();
+                }
+                if (e.key === 'Backspace' && idx > 0) {
+                    boxes[idx - 1].focus();
+                }
+            });
+        });
+
+        function verifyOTP() {
+            const otp = Array.from(boxes).map(b => b.value).join('');
+            const errorElement = document.getElementById('otp-error');
+            const btn = document.querySelector('#step-2 .btn-primary');
+
+            if (otp === currentOTP) {
+                errorElement.style.display = 'none';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                errorElement.style.display = 'block';
+                // Clear boxes on error
+                boxes.forEach(b => b.value = '');
+                boxes[0].focus();
+            }
+        }
+    </script>
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(120%);
+            }
+        }
+    </style>
+
+
+</body>
+
+</html>
