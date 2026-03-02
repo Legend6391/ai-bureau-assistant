@@ -1,86 +1,69 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { auth } from "./config.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyBWBqzXb-xnyvvcMSvwyxuM-g2cenLzna0",
-    authDomain: "aipersonalbureaucracyassistant.firebaseapp.com",
-    projectId: "aipersonalbureaucracyassistant",
-    storageBucket: "aipersonalbureaucracyassistant.firebasestorage.app",
-    messagingSenderId: "972045235604",
-    appId: "1:972045235604:web:e49092343b57fd18df8b81",
-    measurementId: "G-8XMWCK41JP"
-};
+const submit = document.querySelector('#login-btn');
 
-const app = initializeApp(firebaseConfig);
-
-const submit = document.querySelector('#step-1 .btn-primary');
-
-submit.addEventListener('click', () => {
+submit.addEventListener('click', (event) => {
     event.preventDefault();
 
-    const loginId = document.getElementById('login-id').value;
+    const loginId = document.getElementById('login-id').value.trim();
     const pass = document.getElementById('password').value;
     const consent = document.getElementById('consent').checked;
     const errorElement = document.getElementById('id-error');
+    const loginError = document.getElementById('login-error');
 
-    const auth = getAuth();
+    // Reset errors
+    errorElement.style.display = 'none';
+    loginError.style.display = 'none';
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    let isValid = true;
+    if (!loginId || !pass) {
+        loginError.textContent = "Email and password are required.";
+        loginError.style.display = 'block';
+        return;
+    }
 
-    if (loginId === '' || pass === '') {
-        document.getElementById('login-error').textContent = "Email and password are required.";
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('login-error').style.alignItems = 'center';
-        isValid = false;
-    } else if (!emailRegex.test(loginId)) {
+    if (!emailRegex.test(loginId)) {
         errorElement.style.display = 'block';
-        isValid = false;
-    } else if (!consent) {
-        document.getElementById('login-error').textContent = "Please provide consent to proceed.";
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('login-error').style.alignItems = 'center';
-        isValid = false;
-    } else {
-        errorElement.style.display = 'none';
+        return;
     }
 
-    if (isValid) {
-        // This function will be called by the Firebase module script
-        window.dispatchEvent(new CustomEvent('login-attempt', {
-            detail: { loginId, pass }
-        }));
+    if (!consent) {
+        loginError.textContent = "Please provide consent to proceed.";
+        loginError.style.display = 'block';
+        return;
     }
 
-    if (isValid) {
-        signInWithEmailAndPassword(auth, loginId, pass)
-            .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-                window.location.href = "../pages/dashboard.html";
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
+    // Disable button during attempt
+    const originalText = submit.innerHTML;
+    submit.disabled = true;
+    submit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
 
-                let userMessage = "Authentication failed. Please check your credentials.";
-                if (errorCode === 'auth/user-not-found') {
-                    userMessage = "No account found with this email.";
-                } else if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email') {
-                    userMessage = "Incorrect email or password. Please try again.";
-                }
+    signInWithEmailAndPassword(auth, loginId, pass)
+        .then((userCredential) => {
+            window.location.href = "../pages/dashboard.html";
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            console.error("Login error:", error);
 
-                document.getElementById('login-error').textContent = userMessage;
-                document.getElementById('login-error').style.display = 'block';
-                document.getElementById('login-error').style.alignItems = 'center';
-                document.getElementById('login-id').value = '';
-                document.getElementById('password').value = '';
-            });
-    }
+            let userMessage = "Authentication failed. Please check your credentials.";
+            if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
+                userMessage = "Incorrect email or password. Please try again.";
+            } else if (errorCode === 'auth/too-many-requests') {
+                userMessage = "Too many failed attempts. Please try again later.";
+            }
+
+            loginError.textContent = userMessage;
+            loginError.style.display = 'block';
+
+            // Re-enable button
+            submit.disabled = false;
+            submit.innerHTML = originalText;
+
+            // Clear password
+            document.getElementById('password').value = '';
+        });
 });
