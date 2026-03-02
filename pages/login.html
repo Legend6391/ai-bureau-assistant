@@ -221,26 +221,6 @@
     <script>
         let currentOTP = '';
 
-        function showSimulatedNotification(id, otp) {
-            const notice = document.createElement('div');
-            notice.style.cssText = `
-                position: fixed; top: 20px; right: 20px; background: #333; color: white;
-                padding: 15px 25px; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                border-left: 5px solid var(--secondary-color); animation: slideIn 0.5s ease;
-            `;
-            notice.innerHTML = `
-                <div style="font-weight: 700; margin-bottom: 5px;"><i class="fas fa-comment-dots"></i> Message Received</div>
-                <div style="font-size: 0.9rem;">Your GOV-AI Verification Code is: <b style="letter-spacing: 2px;">${otp}</b></div>
-                <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">Sent to ${id}</div>
-            `;
-            document.body.appendChild(notice);
-
-            setTimeout(() => {
-                notice.style.animation = 'slideOut 0.5s ease forwards';
-                setTimeout(() => notice.remove(), 500);
-            }, 6000);
-        }
-
         function showForgotPw() {
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('register-link').style.display = 'none';
