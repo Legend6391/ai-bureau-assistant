@@ -34,18 +34,21 @@ submit.addEventListener('click', () => {
 
     let isValid = true;
 
-    if (!emailRegex.test(loginId)) {
+    if (loginId === '' || pass === '') {
+        document.getElementById('login-error').textContent = "Email and password are required.";
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').style.alignItems = 'center';
+        isValid = false;
+    } else if (!emailRegex.test(loginId)) {
         errorElement.style.display = 'block';
         isValid = false;
-    } else {
-        errorElement.style.display = 'none';
-    }
-
-    if (!consent) {
+    } else if (!consent) {
         document.getElementById('login-error').textContent = "Please provide consent to proceed.";
         document.getElementById('login-error').style.display = 'block';
         document.getElementById('login-error').style.alignItems = 'center';
         isValid = false;
+    } else {
+        errorElement.style.display = 'none';
     }
 
     if (isValid) {
