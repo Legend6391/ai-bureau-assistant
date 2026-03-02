@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script type="module" src="../firebase/Dashboard.js" defer></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -346,14 +347,15 @@
                     <div
                         class="flex items-center gap-3 pl-4 border-slate-200 dark:border-slate-700 relative group cursor-pointer py-1">
                         <div class="text-right hidden sm:block">
-                            <p id="header-user-name" class="text-sm font-bold dark:text-white leading-tight">Udhay Kiran
+                            <p id="header-user-name" class="text-sm font-bold dark:text-white leading-tight">
+                                <!-- User Name -->
                             </p>
                             <p class="text-[10px] text-slate-500 uppercase font-semibold">Citizen ID: 1024-5562</p>
                         </div>
                         <div
                             class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold ring-4 ring-white dark:ring-slate-800 shadow-lg relative overflow-hidden transition-transform group-hover:scale-105">
                             <img id="header-profile-pic" src="" class="hidden h-full w-full object-cover">
-                            <span id="header-initials">UK</span>
+                            <span id="header-initials"><!-- Initials --></span>
                         </div>
 
                         <!-- Dropdown Menu -->
@@ -668,27 +670,64 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-0.5">
                                         <label class="gov-label">Mobile</label>
-                                        <p id="view-mobile" class="font-bold text-slate-800">+91 98765 43210</p>
+                                        <p id="view-mobile" class="font-bold text-slate-800">Field Empty</p>
                                     </div>
                                     <div class="space-y-0.5">
                                         <label class="gov-label">Email</label>
-                                        <p id="view-email" class="font-bold text-slate-800">udhay.kiran@gov.in</p>
+                                        <p id="view-email" class="font-bold text-slate-800">Field Empty</p>
                                     </div>
-                                </div>
-                                <div class="space-y-0.5">
-                                    <label class="gov-label">Current Address</label>
-                                    <p id="view-address" class="font-bold text-slate-800 text-xs">123, Heritage Villa,
-                                        New Delhi, 110001</p>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-0.5">
-                                        <label class="gov-label">Government ID Type</label>
-                                        <p id="view-id-type" class="font-bold text-slate-800">Aadhaar, PAN</p>
+                                        <label class="gov-label">Area/Locality</label>
+                                        <p id="view-area" class="font-bold text-slate-800 text-xs">Field Empty</p>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <label class="gov-label">ID Number</label>
-                                        <p id="view-id-number"
-                                            class="font-mono font-bold text-slate-800 tracking-wider">XXXX-XXXX-4421</p>
+                                        <label class="gov-label">City/District</label>
+                                        <p id="view-city" class="font-bold text-slate-800 text-xs">Field Empty</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">State</label>
+                                        <p id="view-state" class="font-bold text-slate-800 text-xs">Field Empty</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Pin Code</label>
+                                        <p id="view-pincode" class="font-bold text-slate-800 text-xs">Field Empty</p>
+                                    </div>
+                                </div>
+                                <div class="gov-divider"></div>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="space-y-0.5">
+                                            <label class="gov-label">Aadhar ID</label>
+                                            <p id="view-aadhaar"
+                                                class="font-mono font-bold text-slate-800 tracking-wider">Field Empty
+                                            </p>
+                                        </div>
+                                        <span id="aadhaar-verified-icon"
+                                            class="material-icons-outlined text-green-500 text-sm hidden">verified</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="space-y-0.5">
+                                            <label class="gov-label">PAN ID</label>
+                                            <p id="view-pan"
+                                                class="font-mono font-bold text-slate-800 tracking-wider uppercase">
+                                                Field Empty</p>
+                                        </div>
+                                        <span id="pan-verified-icon"
+                                            class="material-icons-outlined text-green-500 text-sm hidden">verified</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="space-y-0.5">
+                                            <label class="gov-label">DL ID</label>
+                                            <p id="view-dl"
+                                                class="font-mono font-bold text-slate-800 tracking-wider uppercase">
+                                                Field Empty</p>
+                                        </div>
+                                        <span id="dl-verified-icon"
+                                            class="material-icons-outlined text-green-500 text-sm hidden">verified</span>
                                     </div>
                                 </div>
                             </div>
@@ -760,7 +799,7 @@
                                     <option value="">Select</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
-                                    <option value="transgender">Transgender</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
                             <div class="space-y-1">
@@ -796,12 +835,29 @@
                                     placeholder="example@domain.com" required>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                            <div class="md:col-span-2 space-y-1">
-                                <label class="gov-label" for="street-name">Residential Address <span
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+                            <div class="space-y-1">
+                                <label class="gov-label" for="area">Area/Locality <span
                                         class="text-red-500">*</span></label>
-                                <textarea id="street-name" name="streetName" class="gov-input" rows="2"
-                                    placeholder="Full residential address" required></textarea>
+                                <input type="text" id="area" name="area" class="gov-input" placeholder="e.g. Rohini"
+                                    required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="city">City/District <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="city" name="city" class="gov-input" placeholder="e.g. New Delhi"
+                                    required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="state">State <span class="text-red-500">*</span></label>
+                                <input type="text" id="state" name="state" class="gov-input" placeholder="e.g. Delhi"
+                                    required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="pincode">Pin Code <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="pincode" name="pincode" class="gov-input" placeholder="6 digits"
+                                    maxlength="6" required>
                             </div>
                         </div>
                     </div>
@@ -811,11 +867,67 @@
                             <span class="material-icons-outlined">verified_user</span>
                             <h3>Government Identification</h3>
                         </div>
-                        <div class="space-y-1 mb-8">
-                            <label class="gov-label" for="gov-id-number">Government ID Number <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" id="gov-id-number" name="govIdNumber" class="gov-input font-mono"
-                                placeholder="Enter ID number" required>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="space-y-1">
+                                <label class="gov-label" for="aadhaar-id">Aadhar ID <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="aadhaar-id" name="aadhaarId" class="gov-input font-mono"
+                                    placeholder="XXXX-XXXX-XXXX" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="pan-id">PAN ID <span class="text-red-500">*</span></label>
+                                <input type="text" id="pan-id" name="panId" class="gov-input font-mono uppercase"
+                                    placeholder="ABCDE1234F" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="dl-id">DL ID <span class="text-red-500">*</span></label>
+                                <input type="text" id="dl-id" name="dlId" class="gov-input font-mono uppercase"
+                                    placeholder="SSRR YYYY NNNNNNN" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="space-y-3">
+                                <label class="gov-label">10th Marksheet <span class="text-red-500">*</span></label>
+                                <div
+                                    class="relative group border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                                    <div id="marksheet-10-placeholder" class="py-2">
+                                        <span class="material-icons-outlined text-2xl text-slate-300">upload_file</span>
+                                        <p class="text-[8px] font-bold text-slate-400 mt-1">UPLOAD 10TH</p>
+                                    </div>
+                                    <img id="marksheet-10-preview" src=""
+                                        class="hidden w-full h-24 object-contain rounded-lg">
+                                    <input type="file" id="marksheet-10-input" name="marksheet10" accept=".pdf,image/*"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="gov-label">12th Marksheet <span class="text-red-500">*</span></label>
+                                <div
+                                    class="relative group border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                                    <div id="marksheet-12-placeholder" class="py-2">
+                                        <span class="material-icons-outlined text-2xl text-slate-300">upload_file</span>
+                                        <p class="text-[8px] font-bold text-slate-400 mt-1">UPLOAD 12TH</p>
+                                    </div>
+                                    <img id="marksheet-12-preview" src=""
+                                        class="hidden w-full h-24 object-contain rounded-lg">
+                                    <input type="file" id="marksheet-12-input" name="marksheet12" accept=".pdf,image/*"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="gov-label">Thumbprint <span class="text-red-500">*</span></label>
+                                <div
+                                    class="relative group border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                                    <div id="thumbprint-placeholder" class="py-2">
+                                        <span class="material-icons-outlined text-2xl text-slate-300">fingerprint</span>
+                                        <p class="text-[8px] font-bold text-slate-400 mt-1">UPLOAD THUMBPRINT</p>
+                                    </div>
+                                    <img id="thumbprint-preview" src=""
+                                        class="hidden w-full h-24 object-contain rounded-lg">
+                                    <input type="file" id="thumbprint-input" name="thumbprint" accept="image/*"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                </div>
+                            </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
@@ -1020,7 +1132,7 @@
                 <div>
                     <h3 class="text-xl font-bold dark:text-white">Update Citizen Profile</h3>
                     <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold font-mono">Profile
-                        Registration Edit (REQ-1)</p>
+                        Registration Edit</p>
                 </div>
                 <button onclick="closeProfileModal()"
                     class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-400">
@@ -1084,8 +1196,8 @@
 
             const sectionMeta = {
                 'nav-overview': { title: 'Dashboard Overview', desc: 'Everything looks good. You have 2 pending tasks.' },
-                'nav-profile': { title: 'Citizen Profile', desc: 'Official identification and demographic data (REQ-1)' },
-                'nav-documents': { title: 'Document Management', desc: 'Manage your government-verified identity proofs (REQ-2)' },
+                'nav-profile': { title: 'Citizen Profile', desc: 'Official identification and demographic data' },
+                'nav-documents': { title: 'Document Management', desc: 'Manage your government-verified identity proofs' },
                 'nav-upload': { title: 'OCR Scanner Workspace', desc: 'Batch process documents with AI data extraction.' },
                 'nav-formfill': { title: 'AI Auto-Fill Service', desc: 'Let AI handle the paperwork using your verified data.' },
                 'nav-status': { title: 'Application Tracking', desc: 'Real-time status of your ongoing government applications.' }
@@ -1165,24 +1277,18 @@
                 if (e.target === modal) closeProfileModal();
             });
 
-            // Digital Citizen Profile Logic (Toggle & Validation)
+            // Digital Citizen Profile Logic (Toggle & Navigation)
             (() => {
                 const viewMode = document.getElementById('profile-view-mode');
                 const editMode = document.getElementById('gov-profile-form');
                 const btnEdit = document.getElementById('btn-edit-profile');
                 const btnCancel = document.getElementById('btn-cancel-edit');
-                const form = document.getElementById('gov-profile-form');
 
-                if (!form || !viewMode) return;
+                if (!btnEdit || !viewMode) return;
 
-                // 1. Toggle Logic
                 const showEdit = () => {
                     viewMode.classList.add('hidden');
                     editMode.classList.remove('hidden');
-                    // Pre-fill form from view labels if needed (for demo robustness)
-                    document.getElementById('first-name').value = document.getElementById('view-full-name').innerText.split(' ')[0];
-                    document.getElementById('mobile').value = document.getElementById('view-mobile').innerText.replace('+91 ', '').replace(/\s/g, '');
-                    document.getElementById('email').value = document.getElementById('view-email').innerText;
                 };
 
                 const showView = () => {
@@ -1193,121 +1299,24 @@
                 btnEdit.addEventListener('click', showEdit);
                 btnCancel.addEventListener('click', showView);
 
-                // 2. Form Logic (Validation & Calculation)
+                // Age Calculation
                 const dobInput = document.getElementById('dob');
                 const ageInput = document.getElementById('age');
-                const consentCheckbox = document.getElementById('consent');
-                const submitBtn = document.getElementById('submit-profile');
-                const govIdInput = document.getElementById('gov-id-number');
-                const successMessage = document.getElementById('success-message');
+                if (dobInput && ageInput) {
+                    dobInput.addEventListener('change', () => {
+                        const dob = new Date(dobInput.value);
+                        const today = new Date();
+                        let age = today.getFullYear() - dob.getFullYear();
+                        const m = today.getMonth() - dob.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
 
-                dobInput.addEventListener('change', () => {
-                    const dob = new Date(dobInput.value);
-                    const today = new Date();
-                    let age = today.getFullYear() - dob.getFullYear();
-                    const m = today.getMonth() - dob.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-
-                    if (age >= 0 && age < 120) {
-                        ageInput.value = age + " Years";
-                        dobInput.classList.remove('border-red-500');
-                    } else {
-                        ageInput.value = "";
-                        dobInput.classList.add('border-red-500');
-                    }
-                    validateForm();
-                });
-
-                // Masking ID
-                govIdInput.addEventListener('blur', () => {
-                    const val = govIdInput.value.replace(/[^a-zA-Z0-9]/g, '');
-                    if (val.length >= 10) {
-                        const masked = val.slice(0, 4).replace(/./g, 'X') + '-' +
-                            val.slice(4, 8).replace(/./g, 'X') + '-' +
-                            val.slice(-4);
-                        govIdInput.dataset.realValue = val;
-                        govIdInput.value = masked;
-                    }
-                });
-                govIdInput.addEventListener('focus', () => {
-                    if (govIdInput.dataset.realValue) govIdInput.value = govIdInput.dataset.realValue;
-                });
-
-                // Previews
-                const setupPreview = (inputId, previewId, placeholderId) => {
-                    const input = document.getElementById(inputId);
-                    const preview = document.getElementById(previewId);
-                    const placeholder = document.getElementById(placeholderId);
-                    const headerPreview = document.getElementById('header-profile-pic');
-                    const headerInitials = document.getElementById('header-initials');
-
-                    input.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                        if (file && file.size <= 2 * 1024 * 1024) {
-                            const reader = new FileReader();
-                            reader.onload = (ev) => {
-                                preview.src = ev.target.result;
-                                preview.classList.remove('hidden');
-                                placeholder.classList.add('hidden');
-
-                                // Sync Header Profile Pic
-                                if (inputId === 'photo-v-input') {
-                                    headerPreview.src = ev.target.result;
-                                    headerPreview.classList.remove('hidden');
-                                    headerInitials.classList.add('hidden');
-                                }
-                            };
-                            reader.readAsDataURL(file);
+                        if (age >= 0 && age < 120) {
+                            ageInput.value = age + " Years";
+                        } else {
+                            ageInput.value = "";
                         }
-                        validateForm();
                     });
-                };
-                setupPreview('photo-v-input', 'photo-v-preview', 'photo-v-placeholder');
-                setupPreview('sig-v-input', 'sig-v-preview', 'sig-v-placeholder');
-
-                const validateForm = () => {
-                    const isFirstNameValid = document.getElementById('first-name').value.length >= 2;
-                    const isMobileValid = /^\d{10}$/.test(document.getElementById('mobile').value);
-                    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value);
-                    const isEverythingValid = form.checkValidity() && isFirstNameValid && isMobileValid && isEmailValid && consentCheckbox.checked;
-                    submitBtn.disabled = !isEverythingValid;
-                    return isEverythingValid;
-                };
-
-                ['first-name', 'last-name', 'mobile', 'email', 'gov-id-number'].forEach(id => {
-                    document.getElementById(id).addEventListener('input', validateForm);
-                });
-                consentCheckbox.addEventListener('change', validateForm);
-
-                // 3. Submission
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    if (validateForm()) {
-                        // Update View Mode Labels
-                        const firstName = document.getElementById('first-name').value;
-                        const lastName = document.getElementById('last-name').value;
-                        const fullName = `${firstName} ${lastName}`;
-
-                        document.getElementById('view-full-name').innerText = fullName;
-                        document.getElementById('view-mobile').innerText = `+91 ${document.getElementById('mobile').value}`;
-                        document.getElementById('view-email').innerText = document.getElementById('email').value;
-                        document.getElementById('view-dob').innerText = document.getElementById('dob').value;
-                        document.getElementById('view-age').innerText = document.getElementById('age').value;
-                        document.getElementById('view-gender').innerText = document.getElementById('gender').options[document.getElementById('gender').selectedIndex].text;
-                        document.getElementById('view-employment').innerText = document.getElementById('employment-type').options[document.getElementById('employment-type').selectedIndex].text;
-                        document.getElementById('view-id-number').innerText = govIdInput.value;
-                        document.getElementById('view-address').innerText = document.getElementById('street-name').value;
-
-                        // Sync Header Information
-                        document.getElementById('header-user-name').innerText = fullName;
-                        const initials = (firstName[0] || '') + (lastName[0] || '');
-                        document.getElementById('header-initials').innerText = initials.toUpperCase();
-
-                        editMode.classList.add('hidden');
-                        successMessage.classList.remove('hidden');
-                        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
+                }
             })();
         });
     </script>
