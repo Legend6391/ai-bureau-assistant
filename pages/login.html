@@ -111,10 +111,10 @@
 
         <!-- Step 1: ID & Password -->
         <form id="login-form">
-            <div id="step-1">
+            <div id="login-fields">
                 <div class="form-group">
                     <label for="login-id">Email</label>
-                    <input type="text" id="login-id" placeholder="Enter Email" required>
+                    <input type="email" id="login-id" placeholder="Enter Email" required>
                     <div id="id-error" class="error-msg">Please enter a valid Email</div>
                 </div>
                 <div class="form-group">
@@ -125,7 +125,7 @@
                     <label class="flex align-center" style="font-weight: 400; margin-bottom: 0;">
                         <input type="checkbox" style="margin-right: 8px;"> Remember me
                     </label>
-                    <a href="javascript:void(0)" onclick="showForgotPw()" style="color: var(--primary-color);">Forgot
+                    <a href="javascript:void(0)" id="btn-forgot-pw" style="color: var(--primary-color);">Forgot
                         Password?</a>
                 </div>
 
@@ -136,67 +136,36 @@
                             style="text-decoration: underline;">Privacy Policy</a>.</span>
                 </div>
 
-                <button type="button" class="btn btn-primary" id="login-btn" style="width: 100%; padding: 14px;">
+                <button type="submit" class="btn btn-primary" id="login-btn" style="width: 100%; padding: 14px;">
                     Login <i class="fas fa-paper-plane"></i>
                 </button>
                 <div id="login-error" class="error-msg"></div>
             </div>
 
-            <!-- Step 2: OTP Verification -->
-            <div id="step-2" class="otp-section">
-                <div class="text-center" style="margin-bottom: 20px;">
-                    <p>A One-Time Password has been sent to your <span id="sent-to-val"
-                            style="font-weight: 600;"></span></p>
-                    <small class="text-muted">Verification required for secure access</small>
-                </div>
-
-                <div class="otp-input-group">
-                    <input type="text" maxlength="1" class="otp-box">
-                    <input type="text" maxlength="1" class="otp-box">
-                    <input type="text" maxlength="1" class="otp-box">
-                    <input type="text" maxlength="1" class="otp-box">
-                </div>
-
-                <div id="otp-error" class="error-msg text-center" style="margin-bottom: 15px;">Invalid OTP. Please try
-                    again.</div>
-
-                <button type="button" onclick="verifyOTP()" class="btn btn-primary" style="width: 100%; padding: 14px;">
-                    Verify & Access Dashboard <i class="fas fa-shield-alt"></i>
-                </button>
-
-                <div class="text-center" style="margin-top: 20px;">
-                    <a href="javascript:void(0)" onclick="backToStep1()"
-                        style="font-size: 0.9rem; color: var(--text-secondary);">
-                        <i class="fas fa-arrow-left"></i> Use different ID
-                    </a>
-                </div>
-            </div>
-
-            <!-- Forgot Password Section -->
-            <div id="forgot-pw-section" class="otp-section">
+            <!-- Forgot Password Section (Initially Hidden) -->
+            <div id="forgot-pw-section" style="display: none; animation: fadeIn 0.5s ease;">
                 <div class="text-center" style="margin-bottom: 20px;">
                     <h3>Recover Password</h3>
-                    <p class="text-secondary">Enter your registered Email or Phone No. to receive instructions.</p>
+                    <p class="text-secondary">Enter your registered Email to receive instructions.</p>
                 </div>
                 <div class="form-group">
-                    <label>Registration ID</label>
-                    <input type="text" id="forgot-id" placeholder="Email or Phone No.">
-                    <div id="forgot-id-error" class="error-msg">Please enter a valid Email or 10-digit Phone No.</div>
+                    <label>Registration Email</label>
+                    <input type="email" id="forgot-id" placeholder="your@email.com">
+                    <div id="forgot-id-error" class="error-msg">Please enter a valid Email</div>
                 </div>
 
                 <div id="forgot-success"
                     style="display: none; background: rgba(40, 167, 69, 0.1); color: var(--success-color); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px; font-size: 0.9rem;">
-                    <i class="fas fa-check-circle"></i> If this ID is registered, you will receive password reset
+                    <i class="fas fa-check-circle"></i> If this email is registered, you will receive password reset
                     instructions shortly.
                 </div>
 
-                <button type="button" id="reset-btn" onclick="handleReset()" class="btn btn-primary"
-                    style="width: 100%; padding: 14px;">
+                <button type="button" id="reset-btn" class="btn btn-primary" style="width: 100%; padding: 14px;">
                     Request Reset Link <i class="fas fa-envelope-open-text"></i>
                 </button>
 
                 <div class="text-center" style="margin-top: 20px;">
-                    <a href="javascript:void(0)" onclick="backToStep1()"
+                    <a href="javascript:void(0)" id="btn-back-to-login"
                         style="font-size: 0.9rem; color: var(--text-secondary);">
                         <i class="fas fa-arrow-left"></i> Back to Login
                     </a>
@@ -219,87 +188,58 @@
     </div>
 
     <script>
-        let currentOTP = '';
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginFields = document.getElementById('login-fields');
+            const forgotPwSection = document.getElementById('forgot-pw-section');
+            const registerLink = document.getElementById('register-link');
 
-        function showForgotPw() {
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('register-link').style.display = 'none';
-            document.getElementById('forgot-pw-section').style.display = 'block';
-        }
+            const btnForgotPw = document.getElementById('btn-forgot-pw');
+            const btnBackToLogin = document.getElementById('btn-back-to-login');
+            const btnReset = document.getElementById('reset-btn');
 
-        function handleReset() {
-            const id = document.getElementById('forgot-id').value.trim();
-            const error = document.getElementById('forgot-id-error');
-            const success = document.getElementById('forgot-success');
-            const btn = document.getElementById('reset-btn');
+            btnForgotPw?.addEventListener('click', () => {
+                loginFields.style.display = 'none';
+                registerLink.style.display = 'none';
+                forgotPwSection.style.display = 'block';
+            });
 
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phoneRegex = /^\d{10}$/;
+            btnBackToLogin?.addEventListener('click', () => {
+                forgotPwSection.style.display = 'none';
+                loginFields.style.display = 'block';
+                registerLink.style.display = 'block';
 
-            if (!emailRegex.test(id) && !phoneRegex.test(id)) {
-                error.style.display = 'block';
-                success.style.display = 'none';
-                return;
-            }
+                // Reset reset button state
+                btnReset.innerHTML = 'Request Reset Link <i class="fas fa-envelope-open-text"></i>';
+                btnReset.disabled = false;
+                btnReset.style.background = '';
+                document.getElementById('forgot-success').style.display = 'none';
+            });
 
-            error.style.display = 'none';
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
-            btn.disabled = true;
+            btnReset?.addEventListener('click', () => {
+                const id = document.getElementById('forgot-id').value.trim();
+                const error = document.getElementById('forgot-id-error');
+                const success = document.getElementById('forgot-success');
 
-            // In a real app, you'd use Firebase sendPasswordResetEmail
-            setTimeout(() => {
-                success.style.display = 'block';
-                btn.innerHTML = 'Reset Link Sent <i class="fas fa-check"></i>';
-                btn.style.background = 'var(--success-color)';
-            }, 2000);
-        }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        function backToStep1() {
-            document.getElementById('step-2').style.display = 'none';
-            document.getElementById('forgot-pw-section').style.display = 'none';
-            document.getElementById('step-1').style.display = 'block';
-            document.getElementById('register-link').style.display = 'block';
-
-            // Reset reset button state
-            const resetBtn = document.getElementById('reset-btn');
-            resetBtn.innerHTML = 'Request Reset Link <i class="fas fa-envelope-open-text"></i>';
-            resetBtn.disabled = false;
-            resetBtn.style.background = '';
-            document.getElementById('forgot-success').style.display = 'none';
-        }
-
-        // Auto-focus move for OTP boxes
-        const boxes = document.querySelectorAll('.otp-box');
-        boxes.forEach((box, idx) => {
-            box.addEventListener('keyup', (e) => {
-                if (e.target.value.length === 1 && idx < boxes.length - 1) {
-                    boxes[idx + 1].focus();
+                if (!emailRegex.test(id)) {
+                    error.style.display = 'block';
+                    success.style.display = 'none';
+                    return;
                 }
-                if (e.key === 'Backspace' && idx > 0) {
-                    boxes[idx - 1].focus();
-                }
+
+                error.style.display = 'none';
+                btnReset.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
+                btnReset.disabled = true;
+
+                // Simple simulation for now
+                setTimeout(() => {
+                    success.style.display = 'block';
+                    btnReset.innerHTML = 'Reset Link Sent <i class="fas fa-check"></i>';
+                    btnReset.style.background = 'var(--success-color)';
+                }, 1500);
             });
         });
-
-        function verifyOTP() {
-            const otp = Array.from(boxes).map(b => b.value).join('');
-            const errorElement = document.getElementById('otp-error');
-            const btn = document.querySelector('#step-2 .btn-primary');
-
-            if (otp === currentOTP) {
-                errorElement.style.display = 'none';
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
-            } else {
-                errorElement.style.display = 'block';
-                // Clear boxes on error
-                boxes.forEach(b => b.value = '');
-                boxes[0].focus();
-            }
-        }
     </script>
     <style>
         @keyframes slideIn {
