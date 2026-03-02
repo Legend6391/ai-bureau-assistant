@@ -15,9 +15,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#1e40af", // Professional deep blue
-                        secondary: "#0d9488", // Teal accent
-                        "background-light": "#f8fafc",
+                        primary: "#0B3D91", // Government Deep Navy Blue (Aligned with styles.css)
+                        secondary: "#008080", // Government Teal (Aligned with styles.css)
+                        accent: "#FFD700", // Subtle Gold (Aligned with styles.css)
+                        "background-light": "#F8F9FA",
                         "background-dark": "#0f172a",
                     },
                     fontFamily: {
@@ -53,6 +54,202 @@
 
         .dark .grid-pattern {
             background-image: radial-gradient(circle, #334155 1px, transparent 1px);
+        }
+
+        /* Identity Form Styles */
+        .identity-input:focus {
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+
+        .input-error {
+            box-shadow: 0 0 0 2px #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .input-success {
+            box-shadow: 0 0 0 2px #22c55e !important;
+            background-color: #f0fdf4 !important;
+        }
+
+        .dark .input-error {
+            background-color: rgba(239, 68, 68, 0.05) !important;
+        }
+
+        .dark .input-success {
+            background-color: rgba(34, 197, 94, 0.05) !important;
+        }
+
+        .validation-icon.success {
+            color: #22c55e;
+        }
+
+        .validation-icon.error {
+            color: #ef4444;
+        }
+
+        .edu-card.active {
+            border-color: #1e40af;
+            background-color: #eff6ff;
+        }
+
+        .dark .edu-card.active {
+            background-color: rgba(30, 64, 175, 0.1);
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.2s ease-in-out 0s 2;
+        }
+
+        /* Government Theme Overrides */
+        .gov-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .gov-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .gov-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e0;
+            background-color: #f8fafc;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .gov-input:focus {
+            outline: none;
+            border-color: #003366;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .gov-input.error {
+            border-color: #e53e3e;
+            background-color: #fff5f5;
+        }
+
+        .gov-input.success {
+            border-color: #38a169;
+            background-color: #f0fff4;
+        }
+
+        .gov-btn-primary {
+            background-color: #003366;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2);
+        }
+
+        .gov-btn-primary:hover:not(:disabled) {
+            background-color: #002244;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px rgba(0, 51, 102, 0.3);
+        }
+
+        .gov-btn-primary:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .gov-error-text {
+            color: #e53e3e;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .gov-badge {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .gov-badge-secure {
+            background-color: #f0fff4;
+            color: #2f855a;
+            border: 1px solid #c6f6d5;
+        }
+
+        .gov-badge-encrypted {
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            border: 1px solid #bee3f8;
+        }
+
+        .gov-divider {
+            height: 1px;
+            background: linear-gradient(to right, #e2e8f0, transparent);
+            margin: 20px 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            color: #003366;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Dropdown Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideIn 0.2s ease-out forwards;
         }
     </style>
 </head>
@@ -146,18 +343,49 @@
                         placeholder="Search services..." type="text" />
                 </div>
                 <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
-                    <button id="btn-update-profile"
-                        class="hidden md:flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all ring-1 ring-primary/20">
-                        <span class="material-icons-outlined text-sm">edit</span>
-                        UPDATE PROFILE
-                    </button>
-                    <div class="text-right hidden sm:block">
-                        <p id="header-user-name" class="text-sm font-bold dark:text-white leading-tight">Udhay Kiran</p>
-                        <p class="text-[10px] text-slate-500 uppercase font-semibold">Citizen ID: 1024-5562</p>
-                    </div>
                     <div
-                        class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold ring-4 ring-white dark:ring-slate-800 shadow-lg">
-                        UK
+                        class="flex items-center gap-3 pl-4 border-slate-200 dark:border-slate-700 relative group cursor-pointer py-1">
+                        <div class="text-right hidden sm:block">
+                            <p id="header-user-name" class="text-sm font-bold dark:text-white leading-tight">Udhay Kiran
+                            </p>
+                            <p class="text-[10px] text-slate-500 uppercase font-semibold">Citizen ID: 1024-5562</p>
+                        </div>
+                        <div
+                            class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold ring-4 ring-white dark:ring-slate-800 shadow-lg relative overflow-hidden transition-transform group-hover:scale-105">
+                            <img id="header-profile-pic" src="" class="hidden h-full w-full object-cover">
+                            <span id="header-initials">UK</span>
+                        </div>
+
+                        <!-- Dropdown Menu -->
+                        <div
+                            class="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 py-2 hidden group-hover:block z-50 hover:bg-slate animate-in fade-in slide-in-from-top-2 duration-150">
+                            <div class="px-4 py-3 border-b border-slate-50 dark:border-slate-700 mb-1">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Account
+                                    Settings</p>
+                            </div>
+
+                            <button
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                                onclick="document.getElementById('photo-v-input').click()">
+                                <span class="material-icons-outlined text-lg">photo_camera</span>
+                                <span>Change Profile Pic</span>
+                            </button>
+
+                            <button
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                                onclick="document.getElementById('nav-profile').click()">
+                                <span class="material-icons-outlined text-lg">person</span>
+                                <span>My Profile</span>
+                            </button>
+
+                            <div class="my-1 border-t border-slate-50 dark:border-slate-700"></div>
+
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-b-xl"
+                                href="login.html">
+                                <span class="material-icons-outlined text-lg">logout</span>
+                                <span class="font-bold">Logout</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,67 +597,292 @@
         </div>
 
         <div id="content-profile" class="content-section hidden">
-            <div
-                class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
-                <div class="flex items-center justify-between mb-8">
+            <div class="max-w-5xl mx-auto">
+                <!-- Profile Header -->
+                <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
                     <div>
-                        <h3 class="text-2xl font-bold dark:text-white">Citizen Registration Profile</h3>
-                        <p class="text-slate-500 text-sm">Official identification and demographic data</p>
+                        <h2 class="text-2xl font-black text-primary uppercase tracking-tight flex items-center gap-2">
+                            <span class="material-icons-outlined">account_circle</span>
+                            Digital Citizen Profile
+                        </h2>
+                        <p class="text-slate-500 font-medium text-sm">Official Government ID • Secure Portal</p>
                     </div>
-                    <span
-                        class="px-4 py-1 bg-green-100 text-green-600 text-xs font-bold rounded-full border border-green-200">VERIFIED
-                        ACCOUNT</span>
+                    <div class="flex gap-2">
+                        <div class="gov-badge gov-badge-secure flex items-center gap-1 opacity-80">
+                            <span class="material-icons-outlined text-[10px]">verified_user</span>
+                            <span class="text-[9px]">ENCRYPTED</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="space-y-6">
-                        <div
-                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
-                            <label
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Full
-                                Legal Name</label>
-                            <p id="profile-display-name" class="text-lg font-semibold dark:text-white">Udhay Kiran</p>
+                <!-- 👁️ VIEW MODE: Citizen Information Overview -->
+                <div id="profile-view-mode" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Primary Info Card -->
+                        <div class="gov-card col-span-1">
+                            <div class="section-header mb-4">
+                                <span class="material-icons-outlined">person</span>
+                                <h3 class="text-sm">Personal Details</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Full Name</label>
+                                        <p id="view-full-name" class="font-bold text-slate-800">Udhay Kiran</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Gender</label>
+                                        <p id="view-gender" class="font-bold text-slate-800">Male</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Date of Birth</label>
+                                        <p id="view-dob" class="font-bold text-slate-800">01 Jan 2000</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Age</label>
+                                        <p id="view-age" class="font-bold text-slate-800">26 Years</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Category</label>
+                                        <p id="view-category" class="font-bold text-slate-800">General</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Employment</label>
+                                        <p id="view-employment" class="font-bold text-slate-800">Government</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
-                            <label
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Citizen
-                                ID (Aadhar)</label>
-                            <p class="text-lg font-semibold dark:text-white">XXXX XXXX 4421</p>
-                        </div>
-                        <div
-                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
-                            <label
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Registered
-                                Contact</label>
-                            <p id="profile-display-contact" class="text-lg font-semibold dark:text-white">+91 98765
-                                43210</p>
+
+                        <!-- Contact & ID Card -->
+                        <div class="gov-card col-span-1">
+                            <div class="section-header mb-4">
+                                <span class="material-icons-outlined">contact_phone</span>
+                                <h3 class="text-sm">Contact & Identification</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Mobile</label>
+                                        <p id="view-mobile" class="font-bold text-slate-800">+91 98765 43210</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Email</label>
+                                        <p id="view-email" class="font-bold text-slate-800">udhay.kiran@gov.in</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <label class="gov-label">Current Address</label>
+                                    <p id="view-address" class="font-bold text-slate-800 text-xs">123, Heritage Villa,
+                                        New Delhi, 110001</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">Government ID Type</label>
+                                        <p id="view-id-type" class="font-bold text-slate-800">Aadhaar, PAN</p>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <label class="gov-label">ID Number</label>
+                                        <p id="view-id-number"
+                                            class="font-mono font-bold text-slate-800 tracking-wider">XXXX-XXXX-4421</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="space-y-6">
-                        <div
-                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
-                            <label
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Official
-                                Email</label>
-                            <p id="profile-display-email" class="text-lg font-semibold dark:text-white">
-                                udhay.kiran@example.gov.in</p>
+                    <!-- Footer Action Card -->
+                    <div class="gov-card flex items-center justify-between border-primary/10 bg-primary/[0.02]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                <span class="material-icons-outlined text-primary">verified</span>
+                            </div>
+                            <div>
+                                <p class="font-black text-slate-800 text-xs uppercase">Verified Identity Profile</p>
+                                <p class="text-[10px] text-slate-500">Last updated: Today, 12:00 PM</p>
+                            </div>
                         </div>
-                        <div
-                            class="group p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all">
-                            <label
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Permanent
-                                Residential Address</label>
-                            <p id="profile-display-address" class="text-lg font-semibold dark:text-white">123, Heritage
-                                Villa, New Delhi, 110001</p>
+                        <button id="btn-edit-profile"
+                            class="px-8 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                            <span class="material-icons-outlined text-sm">edit</span>
+                            Update Digital Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 📝 EDIT MODE: Gov-Grade Form (Hidden by default) -->
+                <form id="gov-profile-form" class="hidden space-y-6" novalidate>
+                    <!-- 1️⃣ Basic Personal Information -->
+                    <div class="gov-card">
+                        <div class="section-header">
+                            <span class="material-icons-outlined">person</span>
+                            <h3>Edit Personal Information</h3>
                         </div>
-                        <div class="flex gap-4">
-                            <button onclick="document.getElementById('profile-modal').classList.remove('hidden')"
-                                class="flex-1 py-3 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
-                                <span class="material-icons-outlined">edit</span> UPDATE PROFILE
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-1">
+                                <label class="gov-label" for="first-name">First Name <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="first-name" name="firstName" class="gov-input"
+                                    placeholder="Enter first name" required>
+                                <p class="gov-error-text hidden" id="error-first-name">Valid first name is required.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="middle-name">Middle Name</label>
+                                <input type="text" id="middle-name" name="middleName" class="gov-input"
+                                    placeholder="Enter middle name">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="last-name">Last Name <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="last-name" name="lastName" class="gov-input"
+                                    placeholder="Enter last name" required>
+                                <p class="gov-error-text hidden" id="error-last-name">Valid last name is required.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+                            <div class="space-y-1">
+                                <label class="gov-label" for="dob">Date of Birth <span
+                                        class="text-red-500">*</span></label>
+                                <input type="date" id="dob" name="dob" class="gov-input" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="age">Age (Auto)</label>
+                                <input type="text" id="age" name="age" class="gov-input bg-slate-50 italic" readonly>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="gender">Gender <span class="text-red-500">*</span></label>
+                                <select id="gender" name="gender" class="gov-input" required>
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="transgender">Transgender</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="employment-type">Employment <span
+                                        class="text-red-500">*</span></label>
+                                <select id="employment-type" name="employmentType" class="gov-input" required>
+                                    <option value="">Select</option>
+                                    <option value="government">Government</option>
+                                    <option value="private">Private</option>
+                                    <option value="self-employed">Self-employed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional cards (Contact, ID, Files) stay similarly structured as before but compressed for clarity -->
+                    <div class="gov-card">
+                        <div class="section-header">
+                            <span class="material-icons-outlined">contact_phone</span>
+                            <h3>Edit Contact & Address</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1">
+                                <label class="gov-label" for="mobile">Mobile Number <span
+                                        class="text-red-500">*</span></label>
+                                <input type="tel" id="mobile" name="mobile" class="gov-input"
+                                    placeholder="10-digit number" maxlength="10" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="gov-label" for="email">Email Address <span
+                                        class="text-red-500">*</span></label>
+                                <input type="email" id="email" name="email" class="gov-input"
+                                    placeholder="example@domain.com" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="md:col-span-2 space-y-1">
+                                <label class="gov-label" for="street-name">Residential Address <span
+                                        class="text-red-500">*</span></label>
+                                <textarea id="street-name" name="streetName" class="gov-input" rows="2"
+                                    placeholder="Full residential address" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gov-card">
+                        <div class="section-header">
+                            <span class="material-icons-outlined">verified_user</span>
+                            <h3>Government Identification</h3>
+                        </div>
+                        <div class="space-y-1 mb-8">
+                            <label class="gov-label" for="gov-id-number">Government ID Number <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" id="gov-id-number" name="govIdNumber" class="gov-input font-mono"
+                                placeholder="Enter ID number" required>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-3">
+                                <label class="gov-label">Passport Photo <span class="text-red-500">*</span></label>
+                                <div
+                                    class="relative group border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                                    <div id="photo-v-placeholder" class="py-4">
+                                        <span class="material-icons-outlined text-3xl text-slate-300">add_a_photo</span>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-2">CLICK TO UPLOAD</p>
+                                    </div>
+                                    <img id="photo-v-preview" src="" class="hidden w-full h-32 object-cover rounded-lg">
+                                    <input type="file" id="photo-v-input" name="photo" accept="image/*"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="gov-label">Digital Signature <span class="text-red-500">*</span></label>
+                                <div
+                                    class="relative group border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                                    <div id="sig-v-placeholder" class="py-4">
+                                        <span class="material-icons-outlined text-3xl text-slate-300">draw</span>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-2">UPLOAD SIGNATURE</p>
+                                    </div>
+                                    <img id="sig-v-preview" src="" class="hidden w-full h-32 object-contain rounded-lg">
+                                    <input type="file" id="sig-v-input" name="signature" accept="image/*"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="gov-card border-secondary/20 bg-secondary/[0.02]">
+                        <div class="flex items-start gap-4 mb-6">
+                            <input type="checkbox" id="consent" name="consent"
+                                class="mt-1 w-5 h-5 rounded text-primary focus:ring-primary border-slate-300" required>
+                            <label for="consent" class="text-[10px] font-medium text-slate-600 leading-relaxed">
+                                I confirm that all provided data is accurate for official governance records.
+                            </label>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-center justify-end gap-3">
+                            <button type="button" id="btn-cancel-edit"
+                                class="w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all">
+                                Cancel
+                            </button>
+                            <button type="submit" id="submit-profile"
+                                class="w-full md:w-auto px-10 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                                disabled>
+                                <span class="material-icons-outlined text-sm">save</span>
+                                Save Digital Profile
                             </button>
                         </div>
+                    </div>
+                </form>
+
+                <!-- Success Confirmation -->
+                <div id="success-message" class="hidden gov-card border-green-500 bg-green-50/50">
+                    <div class="flex flex-col items-center text-center py-10">
+                        <div
+                            class="h-16 w-16 bg-green-500 text-white rounded-full flex items-center justify-center mb-4">
+                            <span class="material-icons-outlined text-3xl">check</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Update Successful</h3>
+                        <p class="text-slate-500 mt-2 text-sm">Your information has been securely updated.</p>
+                        <button onclick="window.location.reload()"
+                            class="mt-6 px-8 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest">Return
+                            to Dashboard</button>
                     </div>
                 </div>
             </div>
@@ -711,6 +1164,151 @@
             modal?.addEventListener('click', (e) => {
                 if (e.target === modal) closeProfileModal();
             });
+
+            // Digital Citizen Profile Logic (Toggle & Validation)
+            (() => {
+                const viewMode = document.getElementById('profile-view-mode');
+                const editMode = document.getElementById('gov-profile-form');
+                const btnEdit = document.getElementById('btn-edit-profile');
+                const btnCancel = document.getElementById('btn-cancel-edit');
+                const form = document.getElementById('gov-profile-form');
+
+                if (!form || !viewMode) return;
+
+                // 1. Toggle Logic
+                const showEdit = () => {
+                    viewMode.classList.add('hidden');
+                    editMode.classList.remove('hidden');
+                    // Pre-fill form from view labels if needed (for demo robustness)
+                    document.getElementById('first-name').value = document.getElementById('view-full-name').innerText.split(' ')[0];
+                    document.getElementById('mobile').value = document.getElementById('view-mobile').innerText.replace('+91 ', '').replace(/\s/g, '');
+                    document.getElementById('email').value = document.getElementById('view-email').innerText;
+                };
+
+                const showView = () => {
+                    editMode.classList.add('hidden');
+                    viewMode.classList.remove('hidden');
+                };
+
+                btnEdit.addEventListener('click', showEdit);
+                btnCancel.addEventListener('click', showView);
+
+                // 2. Form Logic (Validation & Calculation)
+                const dobInput = document.getElementById('dob');
+                const ageInput = document.getElementById('age');
+                const consentCheckbox = document.getElementById('consent');
+                const submitBtn = document.getElementById('submit-profile');
+                const govIdInput = document.getElementById('gov-id-number');
+                const successMessage = document.getElementById('success-message');
+
+                dobInput.addEventListener('change', () => {
+                    const dob = new Date(dobInput.value);
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const m = today.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+
+                    if (age >= 0 && age < 120) {
+                        ageInput.value = age + " Years";
+                        dobInput.classList.remove('border-red-500');
+                    } else {
+                        ageInput.value = "";
+                        dobInput.classList.add('border-red-500');
+                    }
+                    validateForm();
+                });
+
+                // Masking ID
+                govIdInput.addEventListener('blur', () => {
+                    const val = govIdInput.value.replace(/[^a-zA-Z0-9]/g, '');
+                    if (val.length >= 10) {
+                        const masked = val.slice(0, 4).replace(/./g, 'X') + '-' +
+                            val.slice(4, 8).replace(/./g, 'X') + '-' +
+                            val.slice(-4);
+                        govIdInput.dataset.realValue = val;
+                        govIdInput.value = masked;
+                    }
+                });
+                govIdInput.addEventListener('focus', () => {
+                    if (govIdInput.dataset.realValue) govIdInput.value = govIdInput.dataset.realValue;
+                });
+
+                // Previews
+                const setupPreview = (inputId, previewId, placeholderId) => {
+                    const input = document.getElementById(inputId);
+                    const preview = document.getElementById(previewId);
+                    const placeholder = document.getElementById(placeholderId);
+                    const headerPreview = document.getElementById('header-profile-pic');
+                    const headerInitials = document.getElementById('header-initials');
+
+                    input.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file && file.size <= 2 * 1024 * 1024) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                                preview.src = ev.target.result;
+                                preview.classList.remove('hidden');
+                                placeholder.classList.add('hidden');
+
+                                // Sync Header Profile Pic
+                                if (inputId === 'photo-v-input') {
+                                    headerPreview.src = ev.target.result;
+                                    headerPreview.classList.remove('hidden');
+                                    headerInitials.classList.add('hidden');
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        validateForm();
+                    });
+                };
+                setupPreview('photo-v-input', 'photo-v-preview', 'photo-v-placeholder');
+                setupPreview('sig-v-input', 'sig-v-preview', 'sig-v-placeholder');
+
+                const validateForm = () => {
+                    const isFirstNameValid = document.getElementById('first-name').value.length >= 2;
+                    const isMobileValid = /^\d{10}$/.test(document.getElementById('mobile').value);
+                    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value);
+                    const isEverythingValid = form.checkValidity() && isFirstNameValid && isMobileValid && isEmailValid && consentCheckbox.checked;
+                    submitBtn.disabled = !isEverythingValid;
+                    return isEverythingValid;
+                };
+
+                ['first-name', 'last-name', 'mobile', 'email', 'gov-id-number'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', validateForm);
+                });
+                consentCheckbox.addEventListener('change', validateForm);
+
+                // 3. Submission
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (validateForm()) {
+                        // Update View Mode Labels
+                        const firstName = document.getElementById('first-name').value;
+                        const lastName = document.getElementById('last-name').value;
+                        const fullName = `${firstName} ${lastName}`;
+
+                        document.getElementById('view-full-name').innerText = fullName;
+                        document.getElementById('view-mobile').innerText = `+91 ${document.getElementById('mobile').value}`;
+                        document.getElementById('view-email').innerText = document.getElementById('email').value;
+                        document.getElementById('view-dob').innerText = document.getElementById('dob').value;
+                        document.getElementById('view-age').innerText = document.getElementById('age').value;
+                        document.getElementById('view-gender').innerText = document.getElementById('gender').options[document.getElementById('gender').selectedIndex].text;
+                        document.getElementById('view-employment').innerText = document.getElementById('employment-type').options[document.getElementById('employment-type').selectedIndex].text;
+                        document.getElementById('view-id-number').innerText = govIdInput.value;
+                        document.getElementById('view-address').innerText = document.getElementById('street-name').value;
+
+                        // Sync Header Information
+                        document.getElementById('header-user-name').innerText = fullName;
+                        const initials = (firstName[0] || '') + (lastName[0] || '');
+                        document.getElementById('header-initials').innerText = initials.toUpperCase();
+
+                        editMode.classList.add('hidden');
+                        successMessage.classList.remove('hidden');
+                        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            })();
         });
     </script>
 
