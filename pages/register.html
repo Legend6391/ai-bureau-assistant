@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Registration | GOV-AI Assistant</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module" src="../firebase/Register.js" defer></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 550px;
+            padding: 40px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .step-dot.active {
+            background: var(--primary-color);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card register-card">
+        <div class="logo-section">
+            <i class="fas fa-id-card"></i>
+            <h2>Create Citizen Account</h2>
+            <p class="text-secondary">Join the Digital Governance Platform</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+        </div>
+
+        <form action="login.html">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="fname">Full Name</label>
+                    <input type="text" id="fname" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" placeholder="+91" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="reg-email" placeholder="john@example.gov" required>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="••••••••" required>
+                    <div id="reg-error" class="error-msg"></div>
+
+                    <script>
+                        const confirmPassword = document.getElementById('confirm-password');
+                        const regError = document.getElementById('reg-error');
+
+                        confirmPassword.addEventListener('input', () => {
+                            const password = document.getElementById('reg-password').value;
+                            if (password !== confirmPassword.value) {
+                                regError.style.display = 'block';
+                                regError.textContent = 'Passwords do not match';
+                            } else if (password.length < 6) {
+                                regError.style.display = 'block';
+                                regError.textContent = 'Password must be at least 6 characters';
+                            } else {
+                                regError.style.display = 'none';
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="form-group"
+                style="background: #f8f9fa; padding: 15px; border-radius: var(--border-radius); border: 1px solid var(--border-color); margin-top: 10px;">
+                <label class="flex align-center" style="font-weight: 400; margin-bottom: 0; font-size: 0.85rem;">
+                    <input type="checkbox" style="margin-right: 10px;" required>
+                    <span>I agree to the <a href="#" style="color: var(--primary-color);">Terms of Use</a> and
+                        declare
+                        that all information provided is accurate and verifiable.</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 20px;">
+                Register Account <i class="fas fa-user-plus"></i>
+            </button>
+
+            <div id="regBtn-error" class="error-msg"></div>
+        </form>
+
+        <div class="text-center" style="margin-top: 30px; font-size: 0.95rem;">
+            <span>Already have an account?</span>
+            <a href="login.html" style="color: var(--primary-color); font-weight: 700; margin-left: 5px;">Login
+                Directly</a>
+        </div>
+
+        <div class="text-center" style="margin-top: 30px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">
+                <i class="fas fa-shield-alt"></i> Your data is protected under the National Data Protection Act.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
