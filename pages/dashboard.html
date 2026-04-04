@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
@@ -20,6 +22,7 @@
     <script type="module" src="../firebase/Dashboard.js" defer></script>
     <script type="module" src="../Supabase/OCRScanner.js" defer></script>
     <script type="module" src="../Supabase/documents.js" defer></script>
+    <script type="module" src="../js/dashboard.js" defer></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -340,12 +343,19 @@
                     pending tasks.</p>
             </div>
             <div class="flex items-center gap-4">
-                <div class="relative group">
+                <div class="relative" id="search-wrapper">
                     <span
-                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                    <input
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none">search</span>
+                    <input id="global-search-input"
                         class="pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 w-64 focus:ring-2 focus:ring-primary transition-all"
-                        placeholder="Search services..." type="text" />
+                        placeholder="Search services..." type="text" autocomplete="off" />
+                    <!-- Search Results Dropdown -->
+                    <div id="search-results-dropdown"
+                        class="hidden absolute top-full left-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-50 overflow-hidden">
+                        <div id="search-results-list" class="py-1 max-h-72 overflow-y-auto"></div>
+                        <div id="search-no-results" class="hidden px-4 py-3 text-xs text-slate-400 text-center">No
+                            services found</div>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
                     <div
@@ -400,68 +410,77 @@
         <!-- Dynamic Content Sections -->
         <div id="content-overview" class="content-section">
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                <!-- CARD 1: Documents Store (Dynamic) -->
+                <div id="stat-card-documents"
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all cursor-pointer"
+                    data-navigate="documents">
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600 dark:text-blue-400">
                             <span class="material-icons-outlined">description</span>
                         </div>
                         <div class="relative h-10 w-10">
-                            <svg class="h-full w-full" viewBox="0 0 36 36">
+                            <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
                                 <path class="text-slate-100 dark:text-slate-700 stroke-current"
                                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                                     fill="none" stroke-width="3"></path>
-                                <path class="text-blue-500 stroke-current"
+                                <path id="doc-ring-progress" class="text-blue-500 stroke-current"
                                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    fill="none" stroke-dasharray="80, 100" stroke-linecap="round" stroke-width="3">
+                                    fill="none" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3"
+                                    style="transition: stroke-dasharray 0.8s ease">
                                 </path>
                             </svg>
-                            <span
-                                class="absolute inset-0 flex items-center justify-center text-[8px] font-bold">80%</span>
+                            <span id="doc-ring-pct"
+                                class="absolute inset-0 flex items-center justify-center text-[8px] font-bold">0%</span>
                         </div>
                     </div>
                     <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Documents Store</h3>
                     <div class="flex items-end gap-2 mt-1">
-                        <span class="text-3xl font-bold dark:text-white">08</span>
-                        <span class="text-xs text-green-500 font-bold pb-1">+2 this mo</span>
+                        <span id="stat-doc-count" class="text-3xl font-bold dark:text-white">--</span>
+                        <span id="stat-doc-sub" class="text-xs text-slate-400 font-medium pb-1">Loading...</span>
                     </div>
                 </div>
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
+                <!-- CARD 2: Active Applications (Initialized to 0) -->
+                <div id="stat-card-applications"
+                    class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all cursor-pointer"
+                    data-navigate="status">
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-2xl text-teal-600 dark:text-teal-400">
                             <span class="material-icons-outlined">assignment_turned_in</span>
                         </div>
                         <div class="flex items-end gap-1 h-10 pt-2">
-                            <div class="w-1.5 h-3 bg-teal-200 dark:bg-teal-800 rounded-full"></div>
-                            <div class="w-1.5 h-6 bg-teal-300 dark:bg-teal-700 rounded-full"></div>
-                            <div class="w-1.5 h-4 bg-teal-400 dark:bg-teal-600 rounded-full"></div>
-                            <div class="w-1.5 h-8 bg-teal-500 dark:bg-teal-500 rounded-full"></div>
+                            <div class="w-1.5 h-3 bg-teal-100 dark:bg-teal-900 rounded-full"></div>
+                            <div class="w-1.5 h-6 bg-teal-100 dark:bg-teal-900 rounded-full"></div>
+                            <div class="w-1.5 h-4 bg-teal-100 dark:bg-teal-900 rounded-full"></div>
+                            <div class="w-1.5 h-8 bg-teal-100 dark:bg-teal-900 rounded-full"></div>
                         </div>
                     </div>
                     <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Applications</h3>
                     <div class="flex items-end gap-2 mt-1">
-                        <span class="text-3xl font-bold dark:text-white">03</span>
-                        <span class="text-xs text-slate-400 font-medium pb-1">Ongoing</span>
+                        <span id="stat-app-count" class="text-3xl font-bold dark:text-white">0</span>
+                        <span id="stat-app-sub" class="text-xs text-slate-400 font-medium pb-1">No active
+                            applications</span>
                     </div>
                 </div>
-                <div
+                <!-- CARD 3: Pending Renewals (Initialized to 0) -->
+                <div id="stat-card-renewals"
                     class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
                     <div class="flex justify-between items-start mb-4">
                         <div
                             class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-2xl text-amber-600 dark:text-amber-400">
                             <span class="material-icons-outlined">hourglass_empty</span>
                         </div>
-                        <div
-                            class="text-amber-500 font-bold text-xs bg-amber-50 dark:bg-amber-900/50 px-2 py-1 rounded-lg">
-                            High Priority</div>
+                        <div id="renewal-priority-badge"
+                            class="text-slate-400 font-bold text-xs bg-slate-50 dark:bg-slate-700 px-2 py-1 rounded-lg">
+                            All Clear</div>
                     </div>
                     <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending Renewals</h3>
                     <div class="flex items-end gap-2 mt-1">
-                        <span class="text-3xl font-bold dark:text-white">01</span>
-                        <span class="text-xs text-amber-500 font-bold pb-1">Expires in 5d</span>
+                        <span id="stat-renewal-count" class="text-3xl font-bold dark:text-white">0</span>
+                        <span id="stat-renewal-sub" class="text-xs text-slate-400 font-medium pb-1">No renewals
+                            pending</span>
                     </div>
                 </div>
+                <!-- CARD 4: Security Health -->
                 <div
                     class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-xl transition-all">
                     <div class="flex justify-between items-start mb-4">
@@ -572,26 +591,26 @@
                     <div class="bg-gradient-to-br from-primary to-blue-700 rounded-3xl p-8 shadow-xl text-white">
                         <h3 class="text-xl font-bold mb-6">Quick Actions</h3>
                         <div class="grid grid-cols-2 gap-4">
-                            <button
-                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                            <button id="qa-new-app" data-qa-navigate="status"
+                                class="quick-action-nav flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
                                 <span
                                     class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">add_circle_outline</span>
                                 <span class="text-[10px] font-bold uppercase tracking-tight">New App</span>
                             </button>
-                            <button
-                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                            <button id="qa-upload-doc" data-qa-navigate="upload"
+                                class="quick-action-nav flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
                                 <span
                                     class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">file_upload</span>
                                 <span class="text-[10px] font-bold uppercase tracking-tight">Upload Doc</span>
                             </button>
-                            <button
-                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                            <button id="qa-scan-file" data-qa-navigate="upload"
+                                class="quick-action-nav flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
                                 <span
                                     class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">qr_code_scanner</span>
                                 <span class="text-[10px] font-bold uppercase tracking-tight">Scan File</span>
                             </button>
-                            <button
-                                class="flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
+                            <button id="qa-ai-assistant" data-qa-action="open-chatbot"
+                                class="quick-action-nav flex flex-col items-center justify-center p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all gap-2 group">
                                 <span
                                     class="material-icons-outlined text-3xl group-hover:scale-110 transition-transform">smart_toy</span>
                                 <span class="text-[10px] font-bold uppercase tracking-tight">AI Assistant</span>
@@ -996,54 +1015,55 @@
                         </div>
                     </div> <!-- Close Step 3 -->
 
-                <!-- Form Actions -->
-                <div class="gov-card border-secondary/20 bg-secondary/[0.02]">
-                <div class="flex items-start gap-4 mb-6">
-                    <input type="checkbox" id="consent" name="consent"
-                        class="mt-1 w-5 h-5 rounded text-primary focus:ring-primary border-slate-300" required>
-                    <label for="consent" class="text-[10px] font-medium text-slate-600 leading-relaxed">
-                        I confirm that all provided data is accurate for official governance records.
-                    </label>
-                </div>
-                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-                    <button type="button" id="btn-prev-step"
-                        class="hidden w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all shadow-sm">
-                        Back
-                    </button>
-                    <div class="flex gap-3 w-full md:w-auto ml-auto">
-                        <button type="button" id="btn-cancel-edit"
-                            class="w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all">
-                            Cancel
-                        </button>
-                        <button type="button" id="btn-next-step"
-                            class="w-full md:w-auto px-10 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                            Next <span class="material-icons-outlined text-sm">arrow_forward</span>
-                        </button>
-                        <button type="submit" id="submit-profile"
-                            class="hidden w-full md:w-auto px-10 py-3 bg-green-600 text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
-                            disabled>
-                            <span class="material-icons-outlined text-sm">save</span>
-                            Save Digital Profile
-                        </button>
+                    <!-- Form Actions -->
+                    <div class="gov-card border-secondary/20 bg-secondary/[0.02]">
+                        <div class="flex items-start gap-4 mb-6">
+                            <input type="checkbox" id="consent" name="consent"
+                                class="mt-1 w-5 h-5 rounded text-primary focus:ring-primary border-slate-300" required>
+                            <label for="consent" class="text-[10px] font-medium text-slate-600 leading-relaxed">
+                                I confirm that all provided data is accurate for official governance records.
+                            </label>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                            <button type="button" id="btn-prev-step"
+                                class="hidden w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                                Back
+                            </button>
+                            <div class="flex gap-3 w-full md:w-auto ml-auto">
+                                <button type="button" id="btn-cancel-edit"
+                                    class="w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all">
+                                    Cancel
+                                </button>
+                                <button type="button" id="btn-next-step"
+                                    class="w-full md:w-auto px-10 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                                    Next <span class="material-icons-outlined text-sm">arrow_forward</span>
+                                </button>
+                                <button type="submit" id="submit-profile"
+                                    class="hidden w-full md:w-auto px-10 py-3 bg-green-600 text-white rounded-xl font-bold uppercase text-[11px] tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
+                                    disabled>
+                                    <span class="material-icons-outlined text-sm">save</span>
+                                    Save Digital Profile
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            </form>
+                </form>
 
-            <!-- Success Confirmation -->
-            <div id="success-message" class="hidden gov-card border-green-500 bg-green-50/50">
-                <div class="flex flex-col items-center text-center py-10">
-                    <div class="h-16 w-16 bg-green-500 text-white rounded-full flex items-center justify-center mb-4">
-                        <span class="material-icons-outlined text-3xl">check</span>
+                <!-- Success Confirmation -->
+                <div id="success-message" class="hidden gov-card border-green-500 bg-green-50/50">
+                    <div class="flex flex-col items-center text-center py-10">
+                        <div
+                            class="h-16 w-16 bg-green-500 text-white rounded-full flex items-center justify-center mb-4">
+                            <span class="material-icons-outlined text-3xl">check</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Update Successful</h3>
+                        <p class="text-slate-500 mt-2 text-sm">Your information has been securely updated.</p>
+                        <button onclick="window.location.reload()"
+                            class="mt-6 px-8 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest">Return
+                            to Dashboard</button>
                     </div>
-                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Update Successful</h3>
-                    <p class="text-slate-500 mt-2 text-sm">Your information has been securely updated.</p>
-                    <button onclick="window.location.reload()"
-                        class="mt-6 px-8 py-3 bg-primary text-white rounded-xl font-bold uppercase text-[11px] tracking-widest">Return
-                        to Dashboard</button>
                 </div>
             </div>
-        </div>
         </div>
 
         <div id="content-documents" class="content-section hidden">
@@ -1099,18 +1119,6 @@
                                 <div id="doc-upload-progress-bar"
                                     class="h-full bg-primary transition-all duration-300 w-0"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-primary rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons-outlined">auto_awesome</span>
-                            <h4 class="font-bold text-sm uppercase">AI Extraction</h4>
-                        </div>
-                        <p class="text-[10px] opacity-80 leading-relaxed">System automatically extracts structured data
-                            from your uploads for auto-filling future forms.</p>
-                        <div class="mt-4 p-3 bg-white/10 rounded-xl border border-white/5 opacity-40">
-                            <p class="text-[9px] font-mono italic">Waiting for upload...</p>
                         </div>
                     </div>
                 </div>
@@ -1329,10 +1337,7 @@
             </div>
         </div>
     </main>
-    <button
-        class="fixed bottom-8 right-8 h-16 w-16 bg-secondary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50">
-        <span class="material-icons-outlined text-3xl">chat_bubble</span>
-    </button>
+
     <!-- Profile Update Modal -->
     <div id="profile-modal"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -1612,6 +1617,8 @@
         });
     </script>
 
+    <script src="../js/config.js"></script>
+    <script src="../js/chatbot.js"></script>
 </body>
 
 </html>
