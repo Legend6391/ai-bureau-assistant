@@ -1,9 +1,10 @@
 /**
  * AI-Powered Bureaucracy Assistant Configuration
- * Store your sensitive API keys here.
- * In a production environment, use a backend proxy.
+ * No API keys should be stored here.
+ * API calls are handled via secure backend (Vercel serverless function).
  */
 const GOV_AI_CONFIG = {
-    // Get your API key from https://aistudio.google.com/
-    GEMINI_API_KEY: "AIzaSyDzZkYSZ645yvJs4rMHB94sgwkkPj3Y5sY"
+    API_BASE_URL: "/api/generate"  // your Vercel function endpoint
 };
+
+export default GOV_AI_CONFIG;
