@@ -1,6 +1,6 @@
 /**
- * AI-Powered Bureaucracy Assistant Chatbot (Gemini Powered)
- * Handles UI, Personalized AI Logic via Gemini API, Voice Input, and History Persistence
+ * AI-Powered Bureaucracy Assistant Chatbot (Gemini Powered via Vercel API)
+ * Handles UI, Personalized AI Logic, Voice Input, and History Persistence
  */
 
 class BureaucracyChatbot {
@@ -65,9 +65,7 @@ PERSONALIZATION RULES:
                         </div>
                     </div>
                 </div>
-                <div class="chat-body" id="chat-messages">
-                    <!-- Messages will be injected here -->
-                </div>
+                <div class="chat-body" id="chat-messages"></div>
                 <div class="chat-input-area">
                     <div class="chat-input-wrapper">
                         <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
@@ -112,7 +110,6 @@ PERSONALIZATION RULES:
             this.sendBtn.disabled = this.inputField.value.trim() === '';
         });
 
-        // Quick action buttons (delegated)
         this.messagesContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('quick-action-btn')) {
                 const query = e.target.getAttribute('data-query');
@@ -143,10 +140,15 @@ PERSONALIZATION RULES:
     }
 
     extractUserContext() {
-        const userName = document.getElementById('header-user-name')?.textContent?.trim() ||
+        const userName =
+            document.getElementById('header-user-name')?.textContent?.trim() ||
             document.getElementById('view-full-name')?.textContent?.trim() || "";
-        const citizenId = document.querySelector('p.text-\\[10px\\].text-slate-500.uppercase')?.textContent?.trim() || "";
-        const activeSection = document.getElementById('section-title')?.textContent?.trim() || "Dashboard";
+
+        const citizenId =
+            document.querySelector('p.text-\\[10px\\].text-slate-500.uppercase')?.textContent?.trim() || "";
+
+        const activeSection =
+            document.getElementById('section-title')?.textContent?.trim() || "Dashboard";
 
         return { userName, citizenId, activeSection };
     }
@@ -161,8 +163,7 @@ PERSONALIZATION RULES:
             try {
                 this.messages = JSON.parse(stored);
                 this.renderHistory();
-            } catch (e) {
-                console.error("Error loading chat history:", e);
+            } catch {
                 this.messages = [];
                 this.renderInitialMessage();
             }
@@ -180,18 +181,8 @@ PERSONALIZATION RULES:
     }
 
     renderInitialMessage() {
-        const initialText = "Hello! I am your AI Bureaucracy Assistant. I have access to your profile data and can help you navigate our services. How can I assist you today?";
-        this.addMessage('ai', initialText);
-
-        // Add quick actions after the initial message
-        const quickActions = document.createElement('div');
-        quickActions.className = 'quick-actions';
-        quickActions.innerHTML = `
-            <button class="quick-action-btn" data-query="Who are you and what can you do?">Capabilities</button>
-            <button class="quick-action-btn" data-query="How do I use the OCR feature?">OCR Help</button>
-            <button class="quick-action-btn" data-query="Tell me about my profile security.">Security</button>
-        `;
-        this.messagesContainer.appendChild(quickActions);
+        const text = "Hello! I am your AI Bureaucracy Assistant. How can I assist you today?";
+        this.addMessage('ai', text);
     }
 
     async handleSendMessage(forcedText = null) {
@@ -208,80 +199,43 @@ PERSONALIZATION RULES:
             const response = await this.getGeminiResponse(text);
             this.hideTypingIndicator();
             this.addMessage('ai', response);
-        } catch (error) {
+        } catch {
             this.hideTypingIndicator();
-            let errorMsg = "I apologize, but I'm having trouble connecting right now.";
-            if (error.message.includes("403") || error.message.includes("Permission")) {
-                errorMsg = "Access Denied: Please check if your Google AI API key is correct and valid.";
-            } else if (error.message.includes("429")) {
-                errorMsg = "I'm a bit overwhelmed with requests right now. Please try again in a moment.";
-            } else if (error.message.includes("Bad Request")) {
-                errorMsg = `API Error: ${error.message}`;
-            }
-
-            this.addMessage('ai', errorMsg);
-            console.error("Gemini API Error:", error);
+            this.addMessage('ai', "I'm having trouble connecting right now.");
         }
     }
 
     async getGeminiResponse(userQuery) {
-    const context = this.extractUserContext();
+        const context = this.extractUserContext();
 
-    const historyContext = this.messages.slice(-10).map(m =>
-        `${m.type === 'user' ? 'User' : 'Assistant'}: ${m.content}`
-    ).join('\n');
+        const historyContext = this.messages.slice(-10).map(m =>
+            `${m.type === 'user' ? 'User' : 'Assistant'}: ${m.content}`
+        ).join('\n');
 
-    const fullPrompt = `
+        const fullPrompt = `
 ${this.systemPrompt}
 
-CURRENT USER CONTEXT:
-User Name: ${context.userName}
+User: ${context.userName}
 Citizen ID: ${context.citizenId}
-Current Section: ${context.activeSection}
+Section: ${context.activeSection}
 
-CONVERSATION HISTORY:
 ${historyContext}
 
-USER QUERY:
-${userQuery}
+Query: ${userQuery}
+`;
 
-RESPONSE:`;
-
-    try {
-        // ✅ Call your Vercel API instead of Gemini directly
         const response = await fetch(GOV_AI_CONFIG.API_BASE_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{ parts: [{ text: fullPrompt }] }]
             })
         });
 
-        if (!response.ok) {
-            if (response.status === 403) {
-                throw new Error("Permission Denied");
-            } else if (response.status === 429) {
-                throw new Error("Too Many Requests");
-            }
-            throw new Error(`Request failed: ${response.status}`);
-        }
-
         const data = await response.json();
 
-        // Same response parsing
-        if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-            return data.candidates[0].content.parts[0].text;
-        }
-
-        throw new Error('Invalid response format');
-
-    } catch (error) {
-        console.error("Chatbot API Error:", error);
-        throw error;
+        return data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
     }
-}
 
     addMessage(type, content) {
         this.messages.push({ type, content });
@@ -289,93 +243,48 @@ RESPONSE:`;
         this.addMessageToUI(type, content);
     }
 
-    addMessageToUI(type, content, animate = true) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `chat-message ${type}-message ${animate ? 'fade-in' : ''}`;
-
-        const formattedContent = content
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br>');
-
-        msgDiv.innerHTML = formattedContent;
-        this.messagesContainer.appendChild(msgDiv);
+    addMessageToUI(type, content) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${type}-message`;
+        div.innerHTML = content.replace(/\n/g, '<br>');
+        this.messagesContainer.appendChild(div);
         this.scrollToBottom();
     }
 
     showTypingIndicator() {
         this.isTyping = true;
-        const indicator = document.createElement('div');
-        indicator.className = 'typing-indicator';
-        indicator.id = 'typing-indicator';
-        indicator.innerHTML = `
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-        `;
-        this.messagesContainer.appendChild(indicator);
-        this.scrollToBottom();
+        const div = document.createElement('div');
+        div.id = 'typing';
+        div.innerText = "Typing...";
+        this.messagesContainer.appendChild(div);
     }
 
     hideTypingIndicator() {
         this.isTyping = false;
-        const indicator = document.getElementById('typing-indicator');
-        if (indicator) indicator.remove();
+        document.getElementById('typing')?.remove();
     }
 
     scrollToBottom() {
         this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
     }
 
-    /* Voice Input Logic */
     initSpeechRecognition() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            this.micBtn.style.display = 'none';
-            return;
-        }
+        if (!SpeechRecognition) return;
 
         this.recognition = new SpeechRecognition();
-        this.recognition.lang = 'en-US';
-        this.recognition.interimResults = false;
-        this.recognition.maxAlternatives = 1;
 
-        this.recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            this.inputField.value = transcript;
-            this.sendBtn.disabled = false;
-            this.stopSpeech();
-            setTimeout(() => this.handleSendMessage(), 500);
+        this.recognition.onresult = (e) => {
+            this.inputField.value = e.results[0][0].transcript;
+            this.handleSendMessage();
         };
-
-        this.recognition.onerror = () => this.stopSpeech();
-        this.recognition.onend = () => this.stopSpeech();
     }
 
     toggleSpeech() {
-        if (this.isListening) this.stopSpeech();
-        else this.startSpeech();
-    }
-
-    startSpeech() {
-        if (!this.recognition) return;
-        try {
-            this.recognition.start();
-            this.isListening = true;
-            this.micBtn.classList.add('active');
-            this.inputField.placeholder = "Listening...";
-        } catch (e) { console.error(e); }
-    }
-
-    stopSpeech() {
-        if (!this.recognition) return;
-        this.recognition.stop();
-        this.isListening = false;
-        this.micBtn.classList.remove('active');
-        this.inputField.placeholder = "Ask me anything...";
+        if (this.recognition) this.recognition.start();
     }
 }
 
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.govChatbot = new BureaucracyChatbot();
 });
