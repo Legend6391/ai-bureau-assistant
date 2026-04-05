@@ -7,4 +7,3 @@ const GOV_AI_CONFIG = {
     API_BASE_URL: "/api/generate"  // your Vercel function endpoint
 };
 
-export default GOV_AI_CONFIG;
