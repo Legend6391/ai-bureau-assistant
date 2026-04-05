@@ -244,12 +244,19 @@ Query: ${userQuery}
     }
 
     addMessageToUI(type, content) {
-        const div = document.createElement('div');
-        div.className = `chat-message ${type}-message`;
-        div.innerHTML = content.replace(/\n/g, '<br>');
-        this.messagesContainer.appendChild(div);
-        this.scrollToBottom();
-    }
+    const div = document.createElement('div');
+    div.className = `chat-message ${type}-message`;
+
+    // ✅ Convert Markdown to HTML
+    const formattedContent = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // bold
+        .replace(/\n/g, '<br>'); // line breaks
+
+    div.innerHTML = formattedContent;
+
+    this.messagesContainer.appendChild(div);
+    this.scrollToBottom();
+}
 
     showTypingIndicator() {
         this.isTyping = true;
