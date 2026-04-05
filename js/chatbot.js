@@ -9,7 +9,6 @@ class BureaucracyChatbot {
         this.isTyping = false;
         this.isListening = false;
         this.recognition = null;
-        this.apiKey = typeof GOV_AI_CONFIG !== 'undefined' ? GOV_AI_CONFIG.GEMINI_API_KEY : null;
 
         // Chat history storage
         this.messages = [];
@@ -226,18 +225,13 @@ PERSONALIZATION RULES:
     }
 
     async getGeminiResponse(userQuery) {
-        if (!this.apiKey || this.apiKey === "YOUR_GEMINI_API_KEY_HERE" || this.apiKey.length < 20) {
-            return "I need a valid Google AI API key to function. Please update `js/config.js` with your Gemini API key.";
-        }
+    const context = this.extractUserContext();
 
-        const context = this.extractUserContext();
+    const historyContext = this.messages.slice(-10).map(m =>
+        `${m.type === 'user' ? 'User' : 'Assistant'}: ${m.content}`
+    ).join('\n');
 
-        // Build conversation history for the prompt
-        const historyContext = this.messages.slice(-10).map(m =>
-            `${m.type === 'user' ? 'User' : 'Assistant'}: ${m.content}`
-        ).join('\n');
-
-        const fullPrompt = `
+    const fullPrompt = `
 ${this.systemPrompt}
 
 CURRENT USER CONTEXT:
@@ -253,46 +247,41 @@ ${userQuery}
 
 RESPONSE:`;
 
-        try {
-            const cleanKey = this.apiKey.trim();
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${cleanKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: fullPrompt }] }]
-                })
-            });
+    try {
+        // ✅ Call your Vercel API instead of Gemini directly
+        const response = await fetch(GOV_AI_CONFIG.API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: fullPrompt }] }]
+            })
+        });
 
-            if (!response.ok) {
-                const errorBody = await response.json().catch(() => ({}));
-                console.error("Gemini API Error Detail:", errorBody);
-
-                if (response.status === 400) {
-                    throw new Error(`Bad Request: ${errorBody.error?.message || 'Check request format'}`);
-                } else if (response.status === 403) {
-                    throw new Error("Permission Denied: Ensure your API key is correct and has Gemini access.");
-                } else if (response.status === 404) {
-                    throw new Error("Model Not Found: The model 'gemini-1.5-flash' might not be available for your key or in your region.");
-                } else if (response.status === 429) {
-                    throw new Error("Quota Exceeded: Too many requests. Please try again later.");
-                }
-                throw new Error(`API request failed with status ${response.status}`);
+        if (!response.ok) {
+            if (response.status === 403) {
+                throw new Error("Permission Denied");
+            } else if (response.status === 429) {
+                throw new Error("Too Many Requests");
             }
-
-            const data = await response.json();
-
-            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                return data.candidates[0].content.parts[0].text;
-            } else if (data.promptFeedback?.blockReason) {
-                return "I'm sorry, my response was blocked due to safety filters. Please try rephrasing your question.";
-            }
-
-            throw new Error('Unexpected API response structure');
-        } catch (error) {
-            console.error("Chatbot Fetch Error:", error);
-            throw error;
+            throw new Error(`Request failed: ${response.status}`);
         }
+
+        const data = await response.json();
+
+        // Same response parsing
+        if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        throw new Error('Invalid response format');
+
+    } catch (error) {
+        console.error("Chatbot API Error:", error);
+        throw error;
     }
+}
 
     addMessage(type, content) {
         this.messages.push({ type, content });
