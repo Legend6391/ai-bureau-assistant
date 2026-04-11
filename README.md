@@ -5,7 +5,6 @@
 # 🏛️ AI Bureau Assistant
 ### *Bridging Citizens and Government — One Smart Form at a Time*
 
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-ai--bureau--assistant.vercel.app-blue?style=for-the-badge)](https://ai-bureau-assistant.vercel.app)
 [![GitHub](https://img.shields.io/badge/GitHub-Legend6391-black?style=for-the-badge&logo=github)](https://github.com/Legend6391/ai-bureau-assistant)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel)](https://ai-bureau-assistant.vercel.app)
 
@@ -32,7 +31,7 @@ Government paperwork is slow, error-prone, and frustrating — especially for ci
 | 📊 **Application Dashboard** | Track all submitted applications and their real-time status |
 | 🔔 **Deadline Alerts** | Notifications for renewals and upcoming deadlines |
 | 💬 **NLP Query Engine** | Ask questions about procedures in plain English |
-| 🌐 **Multi-language UI** | English, Hindi, Tamil support |
+| 🌐 **Multi-language UI** | English, Hindi, Tamil support availability |
 
 ---
 
